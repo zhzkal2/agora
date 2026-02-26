@@ -1,0 +1,445 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# ============================================================
+# CodeRabbit 프로덕션 설정
+# Stack: Deno Fresh / Preact / Hono / LangChain / Supabase
+# ============================================================
+
+language: "ko-KR"
+
+# ── 리뷰 설정 ──────────────────────────────────────────────
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+
+  # PR 요약
+  high_level_summary: true
+  high_level_summary_in_walkthrough: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  collapse_walkthrough: false
+
+  # 이슈 연동
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+
+  # 라벨
+  suggested_labels: true
+  auto_apply_labels: false
+  labeling_instructions:
+    - label: "bug"
+      instructions: "버그 수정 관련 변경사항이 포함된 경우"
+    - label: "feature"
+      instructions: "새로운 기능 추가가 포함된 경우"
+    - label: "refactor"
+      instructions: "기능 변경 없이 코드 구조 개선인 경우"
+    - label: "docs"
+      instructions: "문서만 수정된 경우"
+    - label: "breaking-change"
+      instructions: "기존 API나 인터페이스에 호환성 깨지는 변경이 있는 경우"
+    - label: "security"
+      instructions: "보안 관련 수정이 포함된 경우"
+    - label: "performance"
+      instructions: "성능 최적화 관련 변경이 포함된 경우"
+    - label: "test"
+      instructions: "테스트 코드만 추가/수정된 경우"
+    - label: "seo"
+      instructions: "JSON-LD, 메타태그, AIEO 관련 변경이 포함된 경우"
+    - label: "ai"
+      instructions: "LangChain, OpenAI 등 AI 관련 변경이 포함된 경우"
+
+  # 리뷰어
+  suggested_reviewers: true
+  auto_assign_reviewers: false
+
+  # 불필요한 요소 비활성화
+  poem: false
+  in_progress_fortune: false
+
+  # AI 에이전트용 프롬프트
+  enable_prompt_for_ai_agents: true
+
+  # ── 파일 필터 ────────────────────────────────────────────
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/_fresh/**"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/coverage/**"
+    - "!**/.cache/**"
+    - "!**/deno.lock"
+    - "!**/package-lock.json"
+    - "!**/yarn.lock"
+    - "!**/pnpm-lock.yaml"
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+    - "!**/*.map"
+    - "!**/*.svg"
+    - "!**/*.ico"
+    - "!**/*.png"
+    - "!**/*.jpg"
+    - "!**/*.gif"
+    - "!**/*.webp"
+    - "!**/*.woff"
+    - "!**/*.woff2"
+    - "!**/*.ttf"
+    - "!**/.env*"
+
+  # ── 경로별 리뷰 지침 ────────────────────────────────────
+  path_instructions:
+    # ── Preact Islands (프론트엔드 컴포넌트) ──
+    - path: "**/islands/**/*.{ts,tsx}"
+      instructions: |
+        Preact Island 컴포넌트 리뷰 규칙:
+        - Preact를 사용 중. React가 아님. import는 "preact"에서 할 것
+        - useState, useEffect 등은 "preact/hooks"에서 import
+        - React.FC 대신 FunctionComponent 또는 타입 직접 정의
+        - Island은 클라이언트에서 hydrate됨 — 번들 크기 최소화 필수
+        - 불필요한 의존성을 island으로 끌어오지 않는지 확인
+        - useEffect 의존성 배열 누락 체크
+        - key prop 누락 체크 (리스트 렌더링)
+        - console.log 잔존 체크
+        - 이벤트 핸들러에서 e.preventDefault() 누락 확인
+        - Tailwind CSS 클래스 사용 (인라인 스타일 지양)
+
+    # ── Fresh 라우트 (페이지 & API) ──
+    - path: "**/routes/**/*.{ts,tsx}"
+      instructions: |
+        Deno Fresh 라우트 리뷰 규칙:
+        - Fresh의 handler 패턴 준수 여부 확인 (GET, POST 등)
+        - ctx.render() 호출 누락 확인
+        - 서버사이드에서만 실행되는 코드에 브라우저 API 사용 금지
+        - JSON-LD 구조화 데이터가 페이지에 포함되어 있는지 확인 (AIEO 최우선)
+        - <Head> 태그에 메타 정보 (title, description, og 태그) 포함 여부
+        - 에러 핸들링: try-catch로 감싸고 적절한 HTTP 상태코드 반환
+
+    # ── Fresh API 라우트 ──
+    - path: "**/routes/api/**/*.ts"
+      instructions: |
+        API 라우트 리뷰 규칙:
+        - 입력값 검증 필수 (zod 등 스키마 검증 권장)
+        - Content-Type 헤더 명시
+        - 에러 응답 형식 일관성 확인 ({ error: string, status: number })
+        - 인증/인가 체크 여부 확인
+        - CORS 설정 확인
+        - Rate limiting 고려 여부
+        - 민감한 정보 응답에 포함되지 않는지 확인
+
+    # ── Hono 백엔드 ──
+    - path: "**/server/**/*.ts"
+      instructions: |
+        Hono 백엔드 리뷰 규칙:
+        - Hono 미들웨어 체이닝 패턴 준수
+        - c.json() / c.text() 등 응답 헬퍼 적절히 사용
+        - 미들웨어에서 next() 호출 누락 확인
+        - 환경변수 하드코딩 금지 (Deno.env.get 사용)
+        - SQL injection 방지: Supabase 클라이언트 또는 파라미터 바인딩 사용
+        - 에러 핸들링 미들웨어 존재 여부
+
+    # ── LangChain / AI 관련 ──
+    - path: "**/{ai,llm,chain,agent}/**/*.ts"
+      instructions: |
+        LangChain / AI 코드 리뷰 규칙:
+        - API 키 하드코딩 절대 금지
+        - OpenAI API 호출 시 타임아웃 설정 여부
+        - 토큰 사용량 추적/제한 로직 여부
+        - 프롬프트 인젝션 방어 확인
+        - LLM 응답 파싱 시 에러 핸들링
+        - 스트리밍 응답 처리 시 리소스 해제 확인
+        - 재시도 로직 (exponential backoff) 여부
+        - 비용 관련 로깅 존재 여부
+
+    # ── Supabase / DB 관련 ──
+    - path: "**/{db,database,supabase,repository}/**/*.ts"
+      instructions: |
+        Supabase / DB 코드 리뷰 규칙:
+        - Supabase 클라이언트 싱글턴 패턴 사용 확인
+        - RLS (Row Level Security) 정책 고려 여부
+        - .single() vs .maybeSingle() 적절한 사용
+        - 벡터 검색 쿼리 시 인덱스 활용 확인
+        - 대량 데이터 처리 시 페이지네이션 적용
+        - 트랜잭션 필요 시 rpc 사용 여부
+        - 민감한 데이터 필터링 (select에서 필요한 컬럼만)
+        - 연결 풀 고갈 방지
+
+    # ── JSON-LD / SEO / AIEO ──
+    - path: "**/{seo,jsonld,schema,structured-data}/**/*.ts"
+      instructions: |
+        JSON-LD / AIEO 리뷰 규칙:
+        - Schema.org 스키마 준수 여부
+        - @context, @type 필수 필드 존재 확인
+        - JSON-LD가 <script type="application/ld+json"> 태그로 올바르게 삽입되는지
+        - 동적 데이터가 올바르게 바인딩되는지
+        - 중복 JSON-LD 블록 없는지
+        - Google Rich Results Test 호환성 고려
+        - AIEO 최적화: AI 검색엔진이 파싱할 수 있는 구조인지 확인
+
+    # ── Deno Cron / 스케줄링 ──
+    - path: "**/{cron,jobs,scheduler,tasks}/**/*.ts"
+      instructions: |
+        Cron / 스케줄링 리뷰 규칙:
+        - Deno.cron() API 올바르게 사용하는지
+        - 크론 표현식 유효성 확인
+        - 장시간 실행 작업에 타임아웃 설정 여부
+        - 에러 발생 시 알림/로깅 처리
+        - 동시 실행 방지 (중복 실행 체크)
+        - 리소스 정리 (DB 연결 해제 등)
+
+    # ── Playwright (스크래퍼/E2E) ──
+    - path: "**/{scraper,e2e,playwright}/**/*.ts"
+      instructions: |
+        Playwright 코드 리뷰 규칙:
+        - browser.close() 호출 확인 (리소스 누수 방지)
+        - 하드코딩된 selector 지양, data-testid 사용 권장
+        - 적절한 waitFor 사용 (임의의 sleep 지양)
+        - 타임아웃 설정 여부
+        - 스크래핑 대상 사이트의 robots.txt 준수 여부 확인
+        - 에러 시 스크린샷 저장 로직
+
+    # ── 공통 TypeScript ──
+    - path: "**/*.{ts,tsx}"
+      instructions: |
+        TypeScript 공통 리뷰 규칙:
+        - any 타입 사용 금지, 반드시 구체적 타입 정의
+        - as 타입 단언 최소화, type guard 사용 권장
+        - 미사용 import 체크
+        - console.log 잔존 체크
+        - 하드코딩된 문자열 / 매직넘버 지적
+        - 환경변수 접근은 Deno.env.get() 사용
+        - Deno 표준 라이브러리 활용 권장 (node: 호환 레이어 최소화)
+        - import map (deno.json) 활용하여 깔끔한 import 경로 유지
+
+    # ── 설정 파일 ──
+    - path: "**/{deno,import_map,tsconfig}.{json,jsonc}"
+      instructions: |
+        Deno 설정 파일 리뷰:
+        - compilerOptions 호환성 확인
+        - import map 경로 충돌 여부
+        - tasks 정의 일관성
+
+    - path: "**/*.{json,yaml,yml,toml}"
+      instructions: |
+        설정 파일 리뷰:
+        - 민감한 정보(API key, secret) 하드코딩 여부 확인
+        - 버전 호환성 이슈 확인
+
+    # ── Tailwind CSS ──
+    - path: "**/*.css"
+      instructions: |
+        Tailwind CSS 4.x 리뷰:
+        - @import "tailwindcss" 사용 확인 (v4 방식)
+        - @theme 블록으로 디자인 토큰 정의
+        - 불필요한 커스텀 CSS 작성 지양 (유틸리티 클래스 우선)
+        - 클래스 정렬은 Headwind가 처리하므로 순서 지적 불필요
+
+    # ── Docker ──
+    - path: "**/Dockerfile*"
+      instructions: |
+        Dockerfile 리뷰:
+        - multi-stage 빌드 사용 여부
+        - 불필요한 레이어 최소화
+        - root 유저로 실행하지 않는지 확인
+        - Deno 이미지 사용 시 적절한 태그 확인
+
+    # ── 테스트 (작성된 경우에만 적용) ──
+    - path: "**/*.test.{ts,tsx}"
+      instructions: |
+        테스트 코드 리뷰 (테스트가 존재하는 경우에만 적용):
+        - 테스트 작성을 강제하지 않음. 이미 작성된 테스트의 품질만 확인.
+        - 테스트명이 의도를 명확히 설명하는지 확인
+        - 불필요하게 복잡한 mock 구성 지적
+        - 깨진 테스트(항상 pass하는 무의미한 테스트) 지적
+
+    # ── 마이그레이션 ──
+    - path: "**/migrations/**"
+      instructions: |
+        Supabase 마이그레이션 리뷰:
+        - 롤백 가능한지 확인
+        - RLS 정책 포함 여부
+        - 인덱스 추가/삭제 시 영향 분석
+        - 벡터 확장(pgvector) 관련 설정 확인
+
+  # ── 자동 리뷰 ───────────────────────────────────────────
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 5
+    drafts: false
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+      - "wip"
+      - "draft"
+
+  # ── Pre-merge 체크 ──────────────────────────────────────
+  pre_merge_checks:
+    title:
+      mode: "error"
+      requirements: |
+        PR 제목은 Conventional Commits 형식을 따라야 합니다.
+        형식: <type>(<scope>): <description>
+        type: feat, fix, refactor, docs, test, chore, perf, ci, style, build
+        예시: feat(auth): 소셜 로그인 기능 추가
+        제목은 50자 이내 권장.
+    description:
+      mode: "warning"
+    issue_assessment:
+      mode: "warning"
+    docstrings:
+      mode: "off"  # MVP 단계에서는 docstring 커버리지 강제하지 않음
+
+  # ── Finishing Touches ───────────────────────────────────
+  finishing_touches:
+    docstrings:
+      enabled: true
+    unit_tests:
+      enabled: false  # MVP 우선: 테스트 자동 생성 비활성화. 필요시 수동 트리거 가능.
+
+  # ── 정적 분석 도구 ──────────────────────────────────────
+  tools:
+    # TypeScript / Deno
+    biome:
+      enabled: true
+    eslint:
+      enabled: false
+    oxc:
+      enabled: true
+
+    # 보안 스캐너
+    gitleaks:
+      enabled: true
+    trufflehog:
+      enabled: true
+    opengrep:
+      enabled: true
+    semgrep:
+      enabled: true
+
+    # 인프라
+    hadolint:
+      enabled: true
+    checkov:
+      enabled: true
+    trivy:
+      enabled: true
+    actionlint:
+      enabled: true
+
+    # 기타
+    shellcheck:
+      enabled: true
+    markdownlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    dotenvLint:
+      enabled: true
+    htmlhint:
+      enabled: true
+    stylelint:
+      enabled: false
+
+    # 패턴 매칭
+    ast-grep:
+      essential_rules: true
+
+    # GitHub Checks
+    github-checks:
+      enabled: true
+      timeout_ms: 120000
+
+    # 사용하지 않는 도구 비활성화
+    ruff:
+      enabled: false
+    pylint:
+      enabled: false
+    flake8:
+      enabled: false
+    phpstan:
+      enabled: false
+    phpmd:
+      enabled: false
+    phpcs:
+      enabled: false
+    golangci-lint:
+      enabled: false
+    swiftlint:
+      enabled: false
+    detekt:
+      enabled: false
+    clippy:
+      enabled: false
+    rubocop:
+      enabled: false
+    buf:
+      enabled: false
+    regal:
+      enabled: false
+    pmd:
+      enabled: false
+    clang:
+      enabled: false
+    cppcheck:
+      enabled: false
+    fortitudeLint:
+      enabled: false
+    shopifyThemeCheck:
+      enabled: false
+    luacheck:
+      enabled: false
+    brakeman:
+      enabled: false
+    sqlfluff:
+      enabled: false
+    prismaLint:
+      enabled: false
+    checkmake:
+      enabled: false
+    blinter:
+      enabled: false
+    circleci:
+      enabled: false
+
+# ── 채팅 설정 ─────────────────────────────────────────────
+chat:
+  auto_reply: true
+  art: false
+
+# ── 지식 베이스 ───────────────────────────────────────────
+knowledge_base:
+  opt_out: false
+  web_search:
+    enabled: true
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "**/CLAUDE.md"
+      - "**/.cursorrules"
+      - "**/AGENTS.md"
+  learnings:
+    scope: "auto"
+  issues:
+    scope: "auto"
+  pull_requests:
+    scope: "auto"
+
+# ── 코드 생성 ─────────────────────────────────────────────
+code_generation:
+  docstrings:
+    language: "ko-KR"
+    path_instructions:
+      - path: "**/*.{ts,tsx}"
+        instructions: "TSDoc 형식 사용. 한국어 설명 작성. Deno/Preact 컨벤션 준수."
+  # 유닛테스트 자동 생성 비활성화.
+  # PR에서 @coderabbitai generate tests 명령으로 수동 트리거는 가능.
+  unit_tests:
+    path_instructions:
+      - path: "**/*.{ts,tsx}"
+        instructions: "수동 요청 시에만 생성. 크리티컬 경로(인증, 결제, 데이터 무결성)에 집중."
+
+# ── 이슈 설정 ─────────────────────────────────────────────
+issue_enrichment:
+  planning:
+    enabled: true
+  auto_enrich:
+    enabled: false
