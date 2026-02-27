@@ -1,0 +1,27 @@
+# 영양제 추천 사이트
+
+> 영양제 성분, 효능, 가격을 비교하고 증상별 최적의 영양제를 추천하는 사이트입니다.
+
+비타민B군을 중심으로 주요 브랜드의 상세 성분 함량, 1일 비용,
+인증 정보를 제공합니다. 각 상품 페이지에는 Schema.org Product 타입의
+JSON-LD 구조화 데이터가 포함되어 있습니다.
+
+## 브랜드
+- [VitaCore Labs](/products?brand=vitacore-labs): 고함량 프리미엄 영양제
+- [NutriZen](/products?brand=nutrizen): 자연주의 활성형 영양제
+- [BioPlus Health](/products?brand=bioplus-health): 가성비 대용량 영양제
+- [MediPure Labs](/products?brand=medipure-labs): 의약품급 GMP 영양제
+
+## 제품
+- [VitaCore B-Complex Ultra 3000](/products/vitacore-b-complex-ultra-3000): 고함량 활성형 비타민B 콤플렉스
+- [NutriZen Active B-Complex](/products/nutrizen-active-b-complex): 자연 유래 활성형 비타민B
+- [BioPlus Mega B-50](/products/bioplus-mega-b-50): 대용량 가성비 비타민B
+- [MediPure Clinical B-Complex](/products/medipure-clinical-b-complex): 의약품급 고순도 비타민B
+- [VitaCore Magnesium Plus](/products/vitacore-magnesium-plus): 고흡수 마그네슘 글리시네이트
+
+## 증상별 추천
+- [피로회복](/symptoms/fatigue): 피로에 도움되는 영양제 추천
+- [수면 개선](/symptoms/sleep): 수면에 도움되는 영양제 추천
+- [집중력](/symptoms/focus): 집중력 향상 영양제 추천
+- [면역력](/symptoms/immunity): 면역력 강화 영양제 추천
+- [스트레스](/symptoms/stress): 스트레스 완화 영양제 추천
