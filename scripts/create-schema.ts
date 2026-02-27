@@ -8,6 +8,8 @@ if (!supabaseUrl || !serviceKey) {
   Deno.exit(1);
 }
 
+const FETCH_TIMEOUT_MS = 30_000;
+
 async function runSql(sql: string, label: string): Promise<boolean> {
   console.log(`\n실행 중: ${label}...`);
 
@@ -21,7 +23,7 @@ async function runSql(sql: string, label: string): Promise<boolean> {
         Prefer: "return=minimal",
       },
       body: JSON.stringify({ sql_query: sql }),
-      signal: AbortSignal.timeout(30_000),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
 
     if (res.ok) {
@@ -38,7 +40,7 @@ async function runSql(sql: string, label: string): Promise<boolean> {
     return false;
   } catch (err: unknown) {
     if (err instanceof DOMException && err.name === "TimeoutError") {
-      console.error(`  타임아웃: ${label} (30초 초과)`);
+      console.error(`  타임아웃: ${label} (${FETCH_TIMEOUT_MS / 1000}초 초과)`);
     } else {
       console.error(`  네트워크 오류: ${label}`, err instanceof Error ? err.message : err);
     }

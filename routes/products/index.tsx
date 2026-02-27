@@ -58,18 +58,33 @@ function buildItemListJsonLd(products: ProductListItem[]) {
 
 export const handler = define.handlers({
   async GET(ctx) {
-    const { data, error } = await supabase
-      .from("products")
-      .select(`
-        id, name, slug, subtitle, price, rating, review_count,
-        form, certification, servings_per_container,
-        brands(name, slug)
-      `)
-      .eq("is_active", true)
-      .order("rating", { ascending: false });
+    let products: ProductListItem[];
 
-    if (error) {
-      console.error("products/index: Supabase query failed", error);
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select(`
+          id, name, slug, subtitle, price, rating, review_count,
+          form, certification, servings_per_container,
+          brands(name, slug)
+        `)
+        .eq("is_active", true)
+        .order("rating", { ascending: false });
+
+      if (error) {
+        console.error("products/index: Supabase query failed", error);
+        return ctx.render(
+          <main class="max-w-5xl mx-auto px-4 py-16 text-center">
+            <h1 class="text-2xl font-bold">데이터를 불러올 수 없습니다</h1>
+            <p class="text-gray-600 mt-2">잠시 후 다시 시도해주세요.</p>
+          </main>,
+          { status: 500 },
+        );
+      }
+
+      products = (data ?? []) as ProductListItem[];
+    } catch (err: unknown) {
+      console.error("products/index: unexpected error", err);
       return ctx.render(
         <main class="max-w-5xl mx-auto px-4 py-16 text-center">
           <h1 class="text-2xl font-bold">데이터를 불러올 수 없습니다</h1>
@@ -78,8 +93,6 @@ export const handler = define.handlers({
         { status: 500 },
       );
     }
-
-    const products = (data ?? []) as ProductListItem[];
 
     const page = (
       <>
