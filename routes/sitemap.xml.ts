@@ -18,6 +18,11 @@ export const handler = define.handlers({
       supabase.from("symptoms").select("slug"),
     ]);
 
+    if (productsRes.error || symptomsRes.error) {
+      console.error("sitemap: Supabase query failed", productsRes.error, symptomsRes.error);
+      return new Response("Internal Server Error", { status: 500 });
+    }
+
     const products = productsRes.data ?? [];
     const symptoms = symptomsRes.data ?? [];
 

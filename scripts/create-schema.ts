@@ -11,29 +11,39 @@ if (!supabaseUrl || !serviceKey) {
 async function runSql(sql: string, label: string): Promise<boolean> {
   console.log(`\n실행 중: ${label}...`);
 
-  const res = await fetch(`${supabaseUrl}/rest/v1/rpc/exec_sql`, {
-    method: "POST",
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${serviceKey}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify({ sql_query: sql }),
-  });
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/rpc/exec_sql`, {
+      method: "POST",
+      headers: {
+        apikey: serviceKey!,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ sql_query: sql }),
+      signal: AbortSignal.timeout(30_000),
+    });
 
-  if (res.ok) {
-    console.log(`  완료: ${label}`);
-    return true;
-  }
+    if (res.ok) {
+      console.log(`  완료: ${label}`);
+      return true;
+    }
 
-  const errorText = await res.text();
-  if (errorText.includes("exec_sql")) {
+    const errorText = await res.text();
+    if (errorText.includes("exec_sql")) {
+      return false;
+    }
+
+    console.error(`  실패: ${label}`, errorText);
+    return false;
+  } catch (err: unknown) {
+    if (err instanceof DOMException && err.name === "TimeoutError") {
+      console.error(`  타임아웃: ${label} (30초 초과)`);
+    } else {
+      console.error(`  네트워크 오류: ${label}`, err instanceof Error ? err.message : err);
+    }
     return false;
   }
-
-  console.error(`  실패: ${label}`, errorText);
-  return false;
 }
 
 // schema.sql 파일에서 스키마 읽기 (단일 소스)
