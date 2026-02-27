@@ -38,6 +38,10 @@ interface Product {
   product_ingredients: ProductIngredient[];
 }
 
+function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 function buildJsonLd(product: Product) {
   const dailyCost = product.servings_per_container > 0
     ? (product.price / product.servings_per_container).toFixed(2)
@@ -98,10 +102,14 @@ export const handler = define.handlers({
       .single();
 
     if (error || !data) {
-      return new Response(null, {
-        status: 302,
-        headers: { Location: "/products" },
-      });
+      return ctx.render(
+        <main class="max-w-5xl mx-auto px-4 py-16 text-center">
+          <h1 class="text-2xl font-bold">제품을 찾을 수 없습니다</h1>
+          <p class="text-gray-600 mt-2">요청하신 제품이 존재하지 않습니다.</p>
+          <a href="/products" class="text-blue-600 hover:underline mt-4 inline-block">제품 목록으로 돌아가기</a>
+        </main>,
+        { status: 404 },
+      );
     }
 
     const product = data as Product;
@@ -119,7 +127,7 @@ export const handler = define.handlers({
           />
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(product)) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(buildJsonLd(product)) }}
           />
         </Head>
 

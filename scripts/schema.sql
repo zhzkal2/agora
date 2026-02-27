@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS ingredients (
 CREATE TABLE IF NOT EXISTS product_ingredients (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-  ingredient_id UUID REFERENCES ingredients(id),
+  ingredient_id UUID REFERENCES ingredients(id) ON DELETE CASCADE,
   amount DECIMAL(10,2),
   unit TEXT,
   daily_value_pct INT,
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS symptoms (
 -- 성분-증상 매핑
 CREATE TABLE IF NOT EXISTS ingredient_symptoms (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  ingredient_id UUID REFERENCES ingredients(id),
-  symptom_id UUID REFERENCES symptoms(id),
+  ingredient_id UUID REFERENCES ingredients(id) ON DELETE CASCADE,
+  symptom_id UUID REFERENCES symptoms(id) ON DELETE CASCADE,
   relevance_score INT DEFAULT 5,
   evidence_level TEXT,
   UNIQUE(ingredient_id, symptom_id)
@@ -124,6 +124,20 @@ CREATE POLICY "공개 읽기: product_ingredients" ON product_ingredients FOR SE
 CREATE POLICY "공개 읽기: symptoms" ON symptoms FOR SELECT USING (true);
 CREATE POLICY "공개 읽기: ingredient_symptoms" ON ingredient_symptoms FOR SELECT USING (true);
 
--- 로그는 service_role만 쓰기 가능
-CREATE POLICY "서버 쓰기: bot_logs" ON bot_logs FOR INSERT WITH CHECK (true);
-CREATE POLICY "서버 쓰기: click_logs" ON click_logs FOR INSERT WITH CHECK (true);
+-- 로그는 service_role만 쓰기 가능 (anon key 차단)
+CREATE POLICY "서버 쓰기: bot_logs" ON bot_logs FOR INSERT
+  TO service_role
+  WITH CHECK (true);
+
+CREATE POLICY "서버 쓰기: click_logs" ON click_logs FOR INSERT
+  TO service_role
+  WITH CHECK (true);
+
+-- 벡터 검색 인덱스 (v1.1)
+CREATE INDEX IF NOT EXISTS idx_products_embedding ON products
+  USING ivfflat (embedding vector_cosine_ops)
+  WITH (lists = 10);
+
+CREATE INDEX IF NOT EXISTS idx_ingredients_embedding ON ingredients
+  USING ivfflat (embedding vector_cosine_ops)
+  WITH (lists = 10);

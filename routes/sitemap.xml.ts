@@ -1,7 +1,7 @@
 import { define } from "../utils.ts";
 import { supabase } from "../utils/supabase.ts";
 
-const BASE_URL = "https://agora-supplements.deno.dev";
+const BASE_URL = Deno.env.get("BASE_URL") || "https://agora-supplements.deno.dev";
 
 export const handler = define.handlers({
   async GET(_ctx) {

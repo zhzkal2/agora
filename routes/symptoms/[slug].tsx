@@ -45,6 +45,10 @@ const EVIDENCE_LABELS: Record<string, { text: string; color: string }> = {
   weak: { text: "근거 약함", color: "bg-gray-100 text-gray-600" },
 };
 
+function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 function buildJsonLd(symptom: Symptom) {
   const productSlugs = new Set<string>();
   const products: { name: string; slug: string }[] = [];
@@ -68,7 +72,7 @@ function buildJsonLd(symptom: Symptom) {
       "name": symptom.name_ko,
       "description": symptom.description,
       "possibleTreatment": symptom.ingredient_symptoms.map((is) => ({
-        "@type": "Drug",
+        "@type": "DietarySupplement",
         "name": is.ingredients.name_ko,
         "description": is.ingredients.description,
       })),
@@ -105,10 +109,14 @@ export const handler = define.handlers({
       .single();
 
     if (error || !data) {
-      return new Response(null, {
-        status: 302,
-        headers: { Location: "/symptoms" },
-      });
+      return ctx.render(
+        <main class="max-w-5xl mx-auto px-4 py-16 text-center">
+          <h1 class="text-2xl font-bold">증상을 찾을 수 없습니다</h1>
+          <p class="text-gray-600 mt-2">요청하신 증상 정보가 존재하지 않습니다.</p>
+          <a href="/symptoms" class="text-blue-600 hover:underline mt-4 inline-block">증상 목록으로 돌아가기</a>
+        </main>,
+        { status: 404 },
+      );
     }
 
     const symptom = data as Symptom;
@@ -158,7 +166,7 @@ export const handler = define.handlers({
           />
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(symptom)) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(buildJsonLd(symptom)) }}
           />
         </Head>
 

@@ -1,10 +1,23 @@
 import "@std/dotenv/load";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-);
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+if (!supabaseUrl || !serviceRoleKey) {
+  console.error("SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 설정되지 않았습니다.");
+  Deno.exit(1);
+}
+
+// 운영 DB 보호: --allow-seed 플래그 없이 실행 시 확인 프롬프트
+if (!Deno.args.includes("--allow-seed")) {
+  console.warn(`\n⚠️  대상 DB: ${supabaseUrl}`);
+  console.warn("이 스크립트는 기존 데이터를 삭제하고 시드 데이터를 삽입합니다.");
+  console.warn("운영 환경이 아닌지 확인하세요. 확인 후 --allow-seed 플래그를 추가하여 실행하세요.\n");
+  Deno.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, serviceRoleKey);
 
 console.log("=== AIEO MVP 목 데이터 시딩 ===\n");
 

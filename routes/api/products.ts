@@ -13,7 +13,11 @@ export const handler = define.handlers({
       .order("rating", { ascending: false });
 
     if (error) {
-      return Response.json({ error: error.message }, { status: 500 });
+      console.error("products API error:", error.message);
+      return Response.json(
+        { error: "제품 목록을 불러오는데 실패했습니다" },
+        { status: 500 },
+      );
     }
 
     return Response.json(data);

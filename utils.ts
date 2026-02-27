@@ -4,8 +4,7 @@ import { createDefine } from "fresh";
 // data among middlewares, layouts and routes.
 export interface State {
   shared: string;
-  // deno-lint-ignore no-explicit-any
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const define = createDefine<State>();
