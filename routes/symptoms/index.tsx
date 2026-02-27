@@ -24,7 +24,16 @@ export default define.page(async function SymptomList(_ctx) {
     .select("id, name, name_ko, slug, description")
     .order("name_ko");
 
-  const symptoms = (error ? [] : data) as Symptom[];
+  if (error) {
+    return (
+      <main class="max-w-5xl mx-auto px-4 py-16 text-center">
+        <h1 class="text-2xl font-bold">데이터를 불러올 수 없습니다</h1>
+        <p class="text-gray-600 mt-2">잠시 후 다시 시도해주세요.</p>
+      </main>
+    );
+  }
+
+  const symptoms = (data ?? []) as Symptom[];
 
   return (
     <>

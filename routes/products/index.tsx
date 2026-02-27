@@ -30,7 +30,16 @@ export default define.page(async function ProductList(_ctx) {
     .eq("is_active", true)
     .order("rating", { ascending: false });
 
-  const products = (error ? [] : data) as ProductListItem[];
+  if (error) {
+    return (
+      <main class="max-w-5xl mx-auto px-4 py-16 text-center">
+        <h1 class="text-2xl font-bold">데이터를 불러올 수 없습니다</h1>
+        <p class="text-gray-600 mt-2">잠시 후 다시 시도해주세요.</p>
+      </main>
+    );
+  }
+
+  const products = (data ?? []) as ProductListItem[];
 
   return (
     <>

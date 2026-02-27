@@ -51,4 +51,5 @@ if (!success) {
   console.log("아래 SQL을 Supabase 대시보드 > SQL Editor에 붙여넣고 실행해주세요.");
   console.log("========================================\n");
   console.log(SCHEMA_SQL);
+  Deno.exit(1);
 }
