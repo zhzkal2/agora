@@ -1,10 +1,15 @@
 import "@std/dotenv/load";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_ANON_KEY")!,
-);
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("SUPABASE_URL 또는 SUPABASE_ANON_KEY 환경변수가 설정되지 않았습니다.");
+  Deno.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 console.log("=== 데이터 조회 테스트 (anon key 사용) ===\n");
 

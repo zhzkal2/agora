@@ -1,4 +1,10 @@
-User-agent: *
+import { define } from "../utils.ts";
+
+const BASE_URL = Deno.env.get("BASE_URL") || "https://agora-supplements.deno.dev";
+
+export const handler = define.handlers({
+  GET(_ctx) {
+    const body = `User-agent: *
 Allow: /
 
 # AI 크롤러 허용
@@ -30,4 +36,11 @@ Disallow: /
 User-agent: CCBot
 Disallow: /
 
-Sitemap: https://agora-supplements.deno.dev/sitemap.xml
+Sitemap: ${BASE_URL}/sitemap.xml
+`;
+
+    return new Response(body, {
+      headers: { "Content-Type": "text/plain" },
+    });
+  },
+});
