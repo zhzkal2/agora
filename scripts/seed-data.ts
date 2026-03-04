@@ -5,15 +5,21 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!supabaseUrl || !serviceRoleKey) {
-  console.error("SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 설정되지 않았습니다.");
+  console.error(
+    "SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 설정되지 않았습니다.",
+  );
   Deno.exit(1);
 }
 
 // 운영 DB 보호: --allow-seed 플래그 없이 실행 시 확인 프롬프트
 if (!Deno.args.includes("--allow-seed")) {
   console.warn(`\n⚠️  대상 DB: ${supabaseUrl}`);
-  console.warn("이 스크립트는 기존 데이터를 삭제하고 시드 데이터를 삽입합니다.");
-  console.warn("운영 환경이 아닌지 확인하세요. 확인 후 --allow-seed 플래그를 추가하여 실행하세요.\n");
+  console.warn(
+    "이 스크립트는 기존 데이터를 삭제하고 시드 데이터를 삽입합니다.",
+  );
+  console.warn(
+    "운영 환경이 아닌지 확인하세요. 확인 후 --allow-seed 플래그를 추가하여 실행하세요.\n",
+  );
   Deno.exit(1);
 }
 
@@ -103,7 +109,8 @@ const { data: ingredients, error: ingredientsErr } = await supabase
       name: "Biotin",
       name_ko: "비오틴",
       category: "vitamin",
-      description: "모발, 피부, 손톱 건강 지원. 지방산 합성과 에너지 대사에 관여.",
+      description:
+        "모발, 피부, 손톱 건강 지원. 지방산 합성과 에너지 대사에 관여.",
     },
     {
       name: "Pantothenic Acid (B5)",
@@ -123,7 +130,8 @@ const { data: ingredients, error: ingredientsErr } = await supabase
       name: "Vitamin D3",
       name_ko: "비타민 D3",
       category: "vitamin",
-      description: "면역력 강화, 칼슘 흡수 촉진, 뼈 건강. 실내 생활이 많은 현대인에게 필수.",
+      description:
+        "면역력 강화, 칼슘 흡수 촉진, 뼈 건강. 실내 생활이 많은 현대인에게 필수.",
     },
   ])
   .select();
@@ -237,26 +245,138 @@ const productMap = Object.fromEntries(products.map((p) => [p.slug, p.id]));
 console.log("4. 제품-성분 매핑 시딩...");
 const piData = [
   // VitaCore B-Complex
-  { product_id: productMap["vitacore-b-complex-ultra-3000"], ingredient_id: ingredientMap["Vitamin B1 (Thiamine)"], amount: 100, unit: "mg", daily_value_pct: 8333, form: "티아민 HCl" },
-  { product_id: productMap["vitacore-b-complex-ultra-3000"], ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], amount: 100, unit: "mg", daily_value_pct: 5882, form: "피리독살 5-인산" },
-  { product_id: productMap["vitacore-b-complex-ultra-3000"], ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"], amount: 3000, unit: "mcg", daily_value_pct: 125000, form: "메틸코발라민" },
-  { product_id: productMap["vitacore-b-complex-ultra-3000"], ingredient_id: ingredientMap["Folate (Methylfolate)"], amount: 800, unit: "mcg", daily_value_pct: 200, form: "메틸폴레이트" },
-  { product_id: productMap["vitacore-b-complex-ultra-3000"], ingredient_id: ingredientMap["Biotin"], amount: 5000, unit: "mcg", daily_value_pct: 16667, form: "D-비오틴" },
-  { product_id: productMap["vitacore-b-complex-ultra-3000"], ingredient_id: ingredientMap["Pantothenic Acid (B5)"], amount: 500, unit: "mg", daily_value_pct: 10000, form: "판토텐산 칼슘" },
+  {
+    product_id: productMap["vitacore-b-complex-ultra-3000"],
+    ingredient_id: ingredientMap["Vitamin B1 (Thiamine)"],
+    amount: 100,
+    unit: "mg",
+    daily_value_pct: 8333,
+    form: "티아민 HCl",
+  },
+  {
+    product_id: productMap["vitacore-b-complex-ultra-3000"],
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    amount: 100,
+    unit: "mg",
+    daily_value_pct: 5882,
+    form: "피리독살 5-인산",
+  },
+  {
+    product_id: productMap["vitacore-b-complex-ultra-3000"],
+    ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"],
+    amount: 3000,
+    unit: "mcg",
+    daily_value_pct: 125000,
+    form: "메틸코발라민",
+  },
+  {
+    product_id: productMap["vitacore-b-complex-ultra-3000"],
+    ingredient_id: ingredientMap["Folate (Methylfolate)"],
+    amount: 800,
+    unit: "mcg",
+    daily_value_pct: 200,
+    form: "메틸폴레이트",
+  },
+  {
+    product_id: productMap["vitacore-b-complex-ultra-3000"],
+    ingredient_id: ingredientMap["Biotin"],
+    amount: 5000,
+    unit: "mcg",
+    daily_value_pct: 16667,
+    form: "D-비오틴",
+  },
+  {
+    product_id: productMap["vitacore-b-complex-ultra-3000"],
+    ingredient_id: ingredientMap["Pantothenic Acid (B5)"],
+    amount: 500,
+    unit: "mg",
+    daily_value_pct: 10000,
+    form: "판토텐산 칼슘",
+  },
   // NutriZen Active B-Complex
-  { product_id: productMap["nutrizen-active-b-complex"], ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"], amount: 1000, unit: "mcg", daily_value_pct: 41667, form: "메틸코발라민" },
-  { product_id: productMap["nutrizen-active-b-complex"], ingredient_id: ingredientMap["Folate (Methylfolate)"], amount: 400, unit: "mcg", daily_value_pct: 100, form: "메틸폴레이트" },
-  { product_id: productMap["nutrizen-active-b-complex"], ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], amount: 25, unit: "mg", daily_value_pct: 1471, form: "피리독살 5-인산" },
+  {
+    product_id: productMap["nutrizen-active-b-complex"],
+    ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"],
+    amount: 1000,
+    unit: "mcg",
+    daily_value_pct: 41667,
+    form: "메틸코발라민",
+  },
+  {
+    product_id: productMap["nutrizen-active-b-complex"],
+    ingredient_id: ingredientMap["Folate (Methylfolate)"],
+    amount: 400,
+    unit: "mcg",
+    daily_value_pct: 100,
+    form: "메틸폴레이트",
+  },
+  {
+    product_id: productMap["nutrizen-active-b-complex"],
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    amount: 25,
+    unit: "mg",
+    daily_value_pct: 1471,
+    form: "피리독살 5-인산",
+  },
   // BioPlus Mega B-50
-  { product_id: productMap["bioplus-mega-b-50"], ingredient_id: ingredientMap["Vitamin B1 (Thiamine)"], amount: 50, unit: "mg", daily_value_pct: 4167, form: "티아민 HCl" },
-  { product_id: productMap["bioplus-mega-b-50"], ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], amount: 50, unit: "mg", daily_value_pct: 2941, form: "피리독신 HCl" },
-  { product_id: productMap["bioplus-mega-b-50"], ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"], amount: 50, unit: "mcg", daily_value_pct: 2083, form: "시아노코발라민" },
+  {
+    product_id: productMap["bioplus-mega-b-50"],
+    ingredient_id: ingredientMap["Vitamin B1 (Thiamine)"],
+    amount: 50,
+    unit: "mg",
+    daily_value_pct: 4167,
+    form: "티아민 HCl",
+  },
+  {
+    product_id: productMap["bioplus-mega-b-50"],
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    amount: 50,
+    unit: "mg",
+    daily_value_pct: 2941,
+    form: "피리독신 HCl",
+  },
+  {
+    product_id: productMap["bioplus-mega-b-50"],
+    ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"],
+    amount: 50,
+    unit: "mcg",
+    daily_value_pct: 2083,
+    form: "시아노코발라민",
+  },
   // MediPure Clinical B-Complex
-  { product_id: productMap["medipure-clinical-b-complex"], ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"], amount: 2000, unit: "mcg", daily_value_pct: 83333, form: "시아노코발라민" },
-  { product_id: productMap["medipure-clinical-b-complex"], ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], amount: 50, unit: "mg", daily_value_pct: 2941, form: "피리독신 HCl" },
-  { product_id: productMap["medipure-clinical-b-complex"], ingredient_id: ingredientMap["Folate (Methylfolate)"], amount: 1000, unit: "mcg", daily_value_pct: 250, form: "엽산" },
+  {
+    product_id: productMap["medipure-clinical-b-complex"],
+    ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"],
+    amount: 2000,
+    unit: "mcg",
+    daily_value_pct: 83333,
+    form: "시아노코발라민",
+  },
+  {
+    product_id: productMap["medipure-clinical-b-complex"],
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    amount: 50,
+    unit: "mg",
+    daily_value_pct: 2941,
+    form: "피리독신 HCl",
+  },
+  {
+    product_id: productMap["medipure-clinical-b-complex"],
+    ingredient_id: ingredientMap["Folate (Methylfolate)"],
+    amount: 1000,
+    unit: "mcg",
+    daily_value_pct: 250,
+    form: "엽산",
+  },
   // VitaCore Magnesium Plus
-  { product_id: productMap["vitacore-magnesium-plus"], ingredient_id: ingredientMap["Magnesium Glycinate"], amount: 400, unit: "mg", daily_value_pct: 95, form: "마그네슘 글리시네이트" },
+  {
+    product_id: productMap["vitacore-magnesium-plus"],
+    ingredient_id: ingredientMap["Magnesium Glycinate"],
+    amount: 400,
+    unit: "mg",
+    daily_value_pct: 95,
+    form: "마그네슘 글리시네이트",
+  },
 ];
 
 const { data: piResult, error: piErr } = await supabase
@@ -277,11 +397,36 @@ await supabase.from("symptoms").delete().neq("id", "");
 const { data: symptoms, error: symptomsErr } = await supabase
   .from("symptoms")
   .insert([
-    { name: "fatigue", name_ko: "피로회복", slug: "fatigue", description: "만성 피로, 무기력, 에너지 부족" },
-    { name: "sleep", name_ko: "수면 개선", slug: "sleep", description: "불면증, 수면의 질 저하, 잠들기 어려움" },
-    { name: "focus", name_ko: "집중력", slug: "focus", description: "집중력 저하, 브레인 포그, 인지 기능 저하" },
-    { name: "immunity", name_ko: "면역력", slug: "immunity", description: "면역력 저하, 잦은 감기, 회복 지연" },
-    { name: "stress", name_ko: "스트레스", slug: "stress", description: "스트레스, 불안, 긴장" },
+    {
+      name: "fatigue",
+      name_ko: "피로회복",
+      slug: "fatigue",
+      description: "만성 피로, 무기력, 에너지 부족",
+    },
+    {
+      name: "sleep",
+      name_ko: "수면 개선",
+      slug: "sleep",
+      description: "불면증, 수면의 질 저하, 잠들기 어려움",
+    },
+    {
+      name: "focus",
+      name_ko: "집중력",
+      slug: "focus",
+      description: "집중력 저하, 브레인 포그, 인지 기능 저하",
+    },
+    {
+      name: "immunity",
+      name_ko: "면역력",
+      slug: "immunity",
+      description: "면역력 저하, 잦은 감기, 회복 지연",
+    },
+    {
+      name: "stress",
+      name_ko: "스트레스",
+      slug: "stress",
+      description: "스트레스, 불안, 긴장",
+    },
   ])
   .select();
 
@@ -296,20 +441,90 @@ const symptomMap = Object.fromEntries(symptoms.map((s) => [s.slug, s.id]));
 // 6. 성분-증상 매핑
 console.log("6. 성분-증상 매핑 시딩...");
 const isData = [
-  { ingredient_id: ingredientMap["Vitamin B1 (Thiamine)"], symptom_id: symptomMap["fatigue"], relevance_score: 8, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], symptom_id: symptomMap["fatigue"], relevance_score: 7, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], symptom_id: symptomMap["focus"], relevance_score: 7, evidence_level: "moderate" },
-  { ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"], symptom_id: symptomMap["immunity"], relevance_score: 6, evidence_level: "moderate" },
-  { ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"], symptom_id: symptomMap["fatigue"], relevance_score: 9, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"], symptom_id: symptomMap["focus"], relevance_score: 8, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Folate (Methylfolate)"], symptom_id: symptomMap["fatigue"], relevance_score: 7, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Biotin"], symptom_id: symptomMap["fatigue"], relevance_score: 5, evidence_level: "moderate" },
-  { ingredient_id: ingredientMap["Pantothenic Acid (B5)"], symptom_id: symptomMap["stress"], relevance_score: 7, evidence_level: "moderate" },
-  { ingredient_id: ingredientMap["Pantothenic Acid (B5)"], symptom_id: symptomMap["fatigue"], relevance_score: 6, evidence_level: "moderate" },
-  { ingredient_id: ingredientMap["Magnesium Glycinate"], symptom_id: symptomMap["sleep"], relevance_score: 9, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Magnesium Glycinate"], symptom_id: symptomMap["stress"], relevance_score: 8, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Vitamin D3"], symptom_id: symptomMap["immunity"], relevance_score: 9, evidence_level: "strong" },
-  { ingredient_id: ingredientMap["Vitamin D3"], symptom_id: symptomMap["fatigue"], relevance_score: 6, evidence_level: "moderate" },
+  {
+    ingredient_id: ingredientMap["Vitamin B1 (Thiamine)"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 8,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 7,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    symptom_id: symptomMap["focus"],
+    relevance_score: 7,
+    evidence_level: "moderate",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin B6 (P-5-P)"],
+    symptom_id: symptomMap["immunity"],
+    relevance_score: 6,
+    evidence_level: "moderate",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 9,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin B12 (Methylcobalamin)"],
+    symptom_id: symptomMap["focus"],
+    relevance_score: 8,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Folate (Methylfolate)"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 7,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Biotin"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 5,
+    evidence_level: "moderate",
+  },
+  {
+    ingredient_id: ingredientMap["Pantothenic Acid (B5)"],
+    symptom_id: symptomMap["stress"],
+    relevance_score: 7,
+    evidence_level: "moderate",
+  },
+  {
+    ingredient_id: ingredientMap["Pantothenic Acid (B5)"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 6,
+    evidence_level: "moderate",
+  },
+  {
+    ingredient_id: ingredientMap["Magnesium Glycinate"],
+    symptom_id: symptomMap["sleep"],
+    relevance_score: 9,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Magnesium Glycinate"],
+    symptom_id: symptomMap["stress"],
+    relevance_score: 8,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin D3"],
+    symptom_id: symptomMap["immunity"],
+    relevance_score: 9,
+    evidence_level: "strong",
+  },
+  {
+    ingredient_id: ingredientMap["Vitamin D3"],
+    symptom_id: symptomMap["fatigue"],
+    relevance_score: 6,
+    evidence_level: "moderate",
+  },
 ];
 
 const { data: isResult, error: isErr } = await supabase

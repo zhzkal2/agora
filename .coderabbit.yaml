@@ -286,14 +286,14 @@ reviews:
     issue_assessment:
       mode: "warning"
     docstrings:
-      mode: "off"  # MVP 단계에서는 docstring 커버리지 강제하지 않음
+      mode: "off" # MVP 단계에서는 docstring 커버리지 강제하지 않음
 
   # ── Finishing Touches ───────────────────────────────────
   finishing_touches:
     docstrings:
       enabled: true
     unit_tests:
-      enabled: false  # MVP 우선: 테스트 자동 생성 비활성화. 필요시 수동 트리거 가능.
+      enabled: false # MVP 우선: 테스트 자동 생성 비활성화. 필요시 수동 트리거 가능.
 
   # ── 정적 분석 도구 ──────────────────────────────────────
   tools:
