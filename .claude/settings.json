@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"deno --version\")",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Program Files\\\\Deno'' -Recurse -ErrorAction SilentlyContinue; Get-ChildItem ''$env:USERPROFILE\\\\.deno'' -Recurse -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\Users\\\\TY\\\\AppData\\\\Local\\\\Programs\\\\Deno'' -Recurse -ErrorAction SilentlyContinue\")",
+      "Bash(powershell -Command \"Get-Command deno -ErrorAction SilentlyContinue | Select-Object Source; where.exe deno 2>&1; Get-ChildItem ''C:\\\\Users\\\\TY\\\\.deno'' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName\")",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Users\\\\TY\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet'' -Recurse -Filter ''deno.exe'' -ErrorAction SilentlyContinue | Select-Object FullName\")",
+      "Bash(DENO=\"C:/Users/TY/AppData/Local/Microsoft/WinGet/Packages/DenoLand.Deno_Microsoft.Winget.Source_8wekyb3d8bbwe/deno.exe\")",
+      "Bash(\"$DENO\" --version)",
+      "Bash(export DENO_DIR=\"C:/Users/TY/.deno\")",
+      "Bash(export PATH=\"C:/Users/TY/.deno/bin:$PATH\")",
+      "Bash(\"C:/Users/TY/.deno/bin/deno.exe\" --version)",
+      "Bash(\"C:/Users/TY/.deno/bin/deno.exe\" add npm:@supabase/supabase-js@^2.97 npm:langchain@^1.2 npm:@langchain/core@^1.2 npm:@langchain/anthropic jsr:@std/dotenv npm:zod npm:@tailwindcss/vite)",
+      "Bash(\"C:/Users/TY/.deno/bin/deno.exe\" run --allow-net --allow-env --allow-read scripts/check-db.ts)",
+      "Bash(\"C:/Users/TY/.deno/bin/deno.exe\" run --allow-net --allow-env --allow-read scripts/seed-data.ts)",
+      "Bash(C:/Users/TY/.deno/bin/deno.exe task dev)",
+      "Bash(curl -s http://127.0.0.1:5174/)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\TY\\AppData\\Local\\Microsoft\\WinGet\\Packages\\DenoLand.Deno_Microsoft.Winget.Source_8wekyb3d8bbwe"
+    ]
+  }
+}

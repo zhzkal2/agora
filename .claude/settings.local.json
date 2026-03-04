@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"irm https://deno.land/install.ps1 | iex\")",
+      "Bash(export PATH=\"$HOME/.deno/bin:$PATH\")",
+      "Bash(deno --version)"
+    ]
+  }
+}
