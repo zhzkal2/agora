@@ -61,8 +61,16 @@ function buildJsonLd(product: Product) {
       "availability": "https://schema.org/InStock",
     },
     "additionalProperty": [
-      { "@type": "PropertyValue", "name": "서빙 사이즈", "value": product.serving_size },
-      { "@type": "PropertyValue", "name": "총 서빙수", "value": String(product.servings_per_container) },
+      {
+        "@type": "PropertyValue",
+        "name": "서빙 사이즈",
+        "value": product.serving_size,
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "총 서빙수",
+        "value": String(product.servings_per_container),
+      },
       { "@type": "PropertyValue", "name": "제형", "value": product.form },
       ...(product.product_ingredients?.map((pi) => ({
         "@type": "PropertyValue",
@@ -70,10 +78,18 @@ function buildJsonLd(product: Product) {
         "value": `${pi.amount}${pi.unit} (${pi.form})`,
       })) ?? []),
       ...(product.certification?.length
-        ? [{ "@type": "PropertyValue", "name": "인증", "value": product.certification.join(", ") }]
+        ? [{
+          "@type": "PropertyValue",
+          "name": "인증",
+          "value": product.certification.join(", "),
+        }]
         : []),
       ...(dailyCost
-        ? [{ "@type": "PropertyValue", "name": "1일 비용", "value": `$${dailyCost}` }]
+        ? [{
+          "@type": "PropertyValue",
+          "name": "1일 비용",
+          "value": `$${dailyCost}`,
+        }]
         : []),
     ],
     "aggregateRating": {
@@ -106,13 +122,18 @@ export const handler = define.handlers({
         <main class="max-w-5xl mx-auto px-4 py-16 text-center">
           <h1 class="text-2xl font-bold">제품을 찾을 수 없습니다</h1>
           <p class="text-gray-600 mt-2">요청하신 제품이 존재하지 않습니다.</p>
-          <a href="/products" class="text-blue-600 hover:underline mt-4 inline-block">제품 목록으로 돌아가기</a>
+          <a
+            href="/products"
+            class="text-blue-600 hover:underline mt-4 inline-block"
+          >
+            제품 목록으로 돌아가기
+          </a>
         </main>,
         { status: 404 },
       );
     }
 
-    const product = data as Product;
+    const product = data as unknown as Product;
     const dailyCost = product.servings_per_container > 0
       ? (product.price / product.servings_per_container).toFixed(2)
       : null;
@@ -123,11 +144,21 @@ export const handler = define.handlers({
           <title>{product.name} | Agora Supplements</title>
           <meta
             name="description"
-            content={`${product.subtitle}. ${product.brands.name} 제조. ${product.certification?.join(", ")} 인증.`}
+            content={`${product.subtitle}. ${product.brands.name} 제조. ${
+              product.certification?.join(", ")
+            } 인증.`}
           />
+          <meta
+            property="og:title"
+            content={`${product.name} | Agora Supplements`}
+          />
+          <meta property="og:description" content={product.subtitle} />
+          <meta property="og:type" content="product" />
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: safeJsonLd(buildJsonLd(product)) }}
+            dangerouslySetInnerHTML={{
+              __html: safeJsonLd(buildJsonLd(product)),
+            }}
           />
         </Head>
 
@@ -148,7 +179,10 @@ export const handler = define.handlers({
                   <p class="text-sm text-blue-600 font-medium" itemProp="brand">
                     {product.brands.name}
                   </p>
-                  <h1 class="text-2xl md:text-3xl font-bold mt-1" itemProp="name">
+                  <h1
+                    class="text-2xl md:text-3xl font-bold mt-1"
+                    itemProp="name"
+                  >
                     {product.name}
                   </h1>
                   <p class="text-gray-600 mt-1">{product.subtitle}</p>
@@ -164,9 +198,15 @@ export const handler = define.handlers({
               </div>
               <div class="flex items-center gap-4 mt-4 flex-wrap">
                 <div class="flex items-center gap-1">
-                  <span class="text-yellow-500">{"★".repeat(Math.round(product.rating))}</span>
+                  <span class="text-yellow-500">
+                    {"★".repeat(
+                      Math.min(5, Math.max(0, Math.round(product.rating))),
+                    )}
+                  </span>
                   <span class="font-medium">{product.rating}</span>
-                  <span class="text-gray-500 text-sm">({product.review_count}개 리뷰)</span>
+                  <span class="text-gray-500 text-sm">
+                    ({product.review_count}개 리뷰)
+                  </span>
                 </div>
                 {product.certification?.map((cert) => (
                   <span
@@ -186,7 +226,8 @@ export const handler = define.handlers({
                 {product.description}
                 {` ${product.serving_size}당 ${product.servings_per_container}일분이며`}
                 {` ${product.form} 제형입니다.`}
-                {dailyCost && ` 가격은 $${product.price}이며 1일 비용은 $${dailyCost}입니다.`}
+                {dailyCost &&
+                  ` 가격은 $${product.price}이며 1일 비용은 $${dailyCost}입니다.`}
               </p>
             </section>
 
@@ -198,10 +239,18 @@ export const handler = define.handlers({
                   <table class="w-full text-sm">
                     <thead>
                       <tr class="border-b border-gray-200">
-                        <th class="text-left py-3 pr-4 font-medium text-gray-500">성분</th>
-                        <th class="text-right py-3 px-4 font-medium text-gray-500">함량</th>
-                        <th class="text-right py-3 px-4 font-medium text-gray-500">일일 권장량 대비</th>
-                        <th class="text-left py-3 pl-4 font-medium text-gray-500">형태</th>
+                        <th class="text-left py-3 pr-4 font-medium text-gray-500">
+                          성분
+                        </th>
+                        <th class="text-right py-3 px-4 font-medium text-gray-500">
+                          함량
+                        </th>
+                        <th class="text-right py-3 px-4 font-medium text-gray-500">
+                          일일 권장량 대비
+                        </th>
+                        <th class="text-left py-3 pl-4 font-medium text-gray-500">
+                          형태
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -209,10 +258,13 @@ export const handler = define.handlers({
                         <tr key={i} class="border-b border-gray-100">
                           <td class="py-3 pr-4">
                             <p class="font-medium">{pi.ingredients.name_ko}</p>
-                            <p class="text-gray-500 text-xs">{pi.ingredients.name}</p>
+                            <p class="text-gray-500 text-xs">
+                              {pi.ingredients.name}
+                            </p>
                           </td>
                           <td class="text-right py-3 px-4 font-medium">
-                            {pi.amount}{pi.unit}
+                            {pi.amount}
+                            {pi.unit}
                           </td>
                           <td class="text-right py-3 px-4 text-gray-600">
                             {pi.daily_value_pct}%
@@ -232,9 +284,13 @@ export const handler = define.handlers({
                 <h2 class="text-lg font-bold mb-4">성분별 효능</h2>
                 <div class="space-y-4">
                   {product.product_ingredients.map((pi, i) => (
-                    <div key={i} class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                    <div
+                      key={i}
+                      class="border-b border-gray-100 pb-3 last:border-0 last:pb-0"
+                    >
                       <h3 class="font-medium">
-                        {pi.ingredients.name_ko} ({pi.amount}{pi.unit})
+                        {pi.ingredients.name_ko} ({pi.amount}
+                        {pi.unit})
                       </h3>
                       <p class="text-gray-600 text-sm mt-1">
                         {pi.ingredients.description}
@@ -267,11 +323,15 @@ export const handler = define.handlers({
                 </div>
                 <div>
                   <dt class="text-gray-500">총 서빙수</dt>
-                  <dd class="font-medium mt-1">{product.servings_per_container}회분</dd>
+                  <dd class="font-medium mt-1">
+                    {product.servings_per_container}회분
+                  </dd>
                 </div>
                 <div>
                   <dt class="text-gray-500">인증</dt>
-                  <dd class="font-medium mt-1">{product.certification?.join(", ") || "-"}</dd>
+                  <dd class="font-medium mt-1">
+                    {product.certification?.join(", ") || "-"}
+                  </dd>
                 </div>
               </dl>
             </section>

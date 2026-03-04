@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS bot_logs (
   timestamp TIMESTAMPTZ DEFAULT now(),
   bot_name TEXT,
   user_agent TEXT,
-  ip TEXT,
+  ip TEXT,              -- 프록시 헤더 기반. 프로덕션에서는 해싱/마스킹 검토 필요
   path TEXT,
   response_code INT,
   response_time_ms INT
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS click_logs (
   affiliate_url TEXT
 );
 
--- RLS 비활성화 (MVP 단계, 추후 활성화)
+-- RLS 활성화
 ALTER TABLE brands ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ingredients ENABLE ROW LEVEL SECURITY;
@@ -129,9 +129,30 @@ CREATE POLICY "서버 쓰기: bot_logs" ON bot_logs FOR INSERT
   TO service_role
   WITH CHECK (true);
 
+CREATE POLICY "서버 읽기: bot_logs" ON bot_logs FOR SELECT
+  TO service_role
+  USING (true);
+
 CREATE POLICY "서버 쓰기: click_logs" ON click_logs FOR INSERT
   TO service_role
   WITH CHECK (true);
+
+CREATE POLICY "서버 읽기: click_logs" ON click_logs FOR SELECT
+  TO service_role
+  USING (true);
+
+-- FK 인덱스
+CREATE INDEX IF NOT EXISTS idx_products_brand_id ON products (brand_id);
+CREATE INDEX IF NOT EXISTS idx_products_is_active ON products (is_active) WHERE is_active = true;
+CREATE INDEX IF NOT EXISTS idx_product_ingredients_product_id ON product_ingredients (product_id);
+CREATE INDEX IF NOT EXISTS idx_product_ingredients_ingredient_id ON product_ingredients (ingredient_id);
+CREATE INDEX IF NOT EXISTS idx_ingredient_symptoms_ingredient_id ON ingredient_symptoms (ingredient_id);
+CREATE INDEX IF NOT EXISTS idx_ingredient_symptoms_symptom_id ON ingredient_symptoms (symptom_id);
+
+-- 로그 조회 인덱스
+CREATE INDEX IF NOT EXISTS idx_bot_logs_timestamp ON bot_logs (timestamp);
+CREATE INDEX IF NOT EXISTS idx_click_logs_timestamp ON click_logs (timestamp);
+CREATE INDEX IF NOT EXISTS idx_click_logs_product_slug ON click_logs (product_slug);
 
 -- 벡터 검색 인덱스 (v1.1)
 CREATE INDEX IF NOT EXISTS idx_products_embedding ON products
