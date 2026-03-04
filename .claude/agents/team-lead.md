@@ -13,11 +13,12 @@ Read, Glob, Grep, Task
 1. 유저 요청을 분석하고 실행 계획 수립
 2. 필요 시 @coder에게 구현 위임
 3. 구현 완료 후 @tester에게 검증 위임
-4. @tester 통과 보고 받으면 결과 문서 작성
-5. 작업 완료 후 결과를 마크다운 문서로 작성
+4. @tester 통과 보고 받으면 AIEO MVP 설계 문서 갱신
+5. AIEO MVP 설계 문서 작성 (메인 문서)
    - 파일명: AIEO_MVP_v{버전}.md (예: AIEO_MVP_v1.2.md)
    - 기존 최신 버전을 확인하고 마이너 버전을 +0.1 올려서 생성
-   - 포함 내용: 변경사항 요약, 완료 항목, 수정된 코드/파일 목록, 다음 작업
+   - 포함 내용: 설계 변경 상세, 변경 이유, 기존→변경 diff, 수정된 파일 목록
+   - 이 문서가 프로젝트의 **단일 진실 공급원(SSOT)**
 6. 최종 결과 보고
 
 ## Task Delegation Format
@@ -82,4 +83,5 @@ static/              # 정적 파일 (robots.txt, llms.txt 등)
 - [ ] 클로킹 규칙 위반 없음 (User-Agent 기반 응답 분기 없음)
 - [ ] Islands vs Components 배치 적절
 - [ ] TypeScript strict 준수 (`any` 사용 없음)
-- [ ] 결과 문서 (AIEO_MVP_v{버전}.md) 작성 완료
+- [ ] AIEO MVP 설계 문서 (AIEO_MVP_v{버전}.md) 갱신 완료
+- [ ] @tester가 setup 요약 로그 작성 완료

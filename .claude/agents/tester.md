@@ -105,3 +105,18 @@ Summary:
 모든 항목 통과 시:
 
 - @team-lead에게 최종 보고 (Report Format 포함)
+- setup 요약 로그 작성 후 커밋
+
+## Setup Log (요약 문서)
+
+검증 완료 후 `setup/` 디렉토리에 작업 요약 로그를 작성한다.
+
+- 파일명: `setup/{MMDD}v{N}.md` (예: `setup/0304v1.md`)
+- **요약본**만 작성 (상세 설계는 AIEO_MVP_v{버전}.md 참조)
+- 포함 내용:
+  - 작업 제목, 일시, 브랜치
+  - AIEO MVP 설계 문서 참조 링크
+  - 작업 요약 (3-5줄)
+  - 커밋 이력 테이블
+  - 검증 결과 (pass/fail)
+  - PR 링크
