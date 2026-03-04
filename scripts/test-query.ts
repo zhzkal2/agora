@@ -5,7 +5,9 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("SUPABASE_URL 또는 SUPABASE_ANON_KEY 환경변수가 설정되지 않았습니다.");
+  console.error(
+    "SUPABASE_URL 또는 SUPABASE_ANON_KEY 환경변수가 설정되지 않았습니다.",
+  );
   Deno.exit(1);
 }
 
@@ -15,7 +17,9 @@ console.log("=== 데이터 조회 테스트 (anon key 사용) ===\n");
 
 // 1. 전체 브랜드 조회
 console.log("--- 브랜드 목록 ---");
-const { data: brands } = await supabase.from("brands").select("name, slug, concept");
+const { data: brands } = await supabase.from("brands").select(
+  "name, slug, concept",
+);
 for (const b of brands ?? []) {
   console.log(`  ${b.name} (${b.slug}) — ${b.concept}`);
 }
@@ -52,9 +56,13 @@ if (detail) {
   console.log(`  가격: $${detail.price}`);
   console.log(`  인증: ${(detail.certification as string[]).join(", ")}`);
   console.log(`  성분:`);
-  for (const pi of detail.product_ingredients as Array<Record<string, unknown>>) {
+  for (
+    const pi of detail.product_ingredients as Array<Record<string, unknown>>
+  ) {
     const ing = pi.ingredients as { name: string; name_ko: string };
-    console.log(`    - ${ing.name_ko} ${pi.amount}${pi.unit} (일일 ${pi.daily_value_pct}%)`);
+    console.log(
+      `    - ${ing.name_ko} ${pi.amount}${pi.unit} (일일 ${pi.daily_value_pct}%)`,
+    );
   }
 }
 
@@ -72,7 +80,9 @@ const { data: fatigueProducts } = await supabase
 
 for (const item of fatigueProducts ?? []) {
   const ing = item.ingredients as { name_ko: string };
-  console.log(`  ${ing.name_ko} — 관련도 ${item.relevance_score}/10 (${item.evidence_level})`);
+  console.log(
+    `  ${ing.name_ko} — 관련도 ${item.relevance_score}/10 (${item.evidence_level})`,
+  );
 }
 
 console.log("\n=== 조회 테스트 완료! ===");

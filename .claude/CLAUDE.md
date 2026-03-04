@@ -31,11 +31,13 @@
 ## Fresh (Frontend) Rules
 
 ### Architecture
+
 - Islands Architecture: 기본적으로 JS를 클라이언트에 전송하지 않음
 - 인터랙티브가 필요한 컴포넌트만 `islands/`에 배치하여 선택적 hydration
 - `components/`의 컴포넌트는 서버에서만 렌더링 (JS 미전송)
 
 ### Structure
+
 ```
 routes/          # 파일 기반 라우팅 + 핸들러
 islands/         # 클라이언트 hydration이 필요한 인터랙티브 컴포넌트
@@ -46,6 +48,7 @@ types/           # 공유 타입 정의
 ```
 
 ### Conventions
+
 - Preact 사용. React가 아님. (`import { useState } from "preact/hooks"`)
 - 상태 관리는 Preact Signals 우선 사용 (`@preact/signals`)
 - `useState`/`useEffect` 등 hooks도 사용 가능하나 Signals가 더 효율적
@@ -55,6 +58,7 @@ types/           # 공유 타입 정의
 - 나머지 컴포넌트는 named export 사용
 
 ### Component Patterns
+
 ```tsx
 // components/ (서버 전용, JS 미전송)
 interface HeaderProps {
@@ -62,7 +66,11 @@ interface HeaderProps {
 }
 
 export function Header({ title }: HeaderProps) {
-  return <header><h1>{title}</h1></header>;
+  return (
+    <header>
+      <h1>{title}</h1>
+    </header>
+  );
 }
 ```
 
@@ -105,6 +113,7 @@ export default define.page(function Home() {
 ```
 
 ### Fresh Decision Guide
+
 - 정적 콘텐츠 → `components/` (JS 전송 없음)
 - 클릭, 입력, 토글 등 인터랙션 필요 → `islands/`
 - 데이터 fetch, 리다이렉트, 인증 → `routes/` handler
@@ -115,6 +124,7 @@ export default define.page(function Home() {
 ## Hono (Backend) Rules
 
 ### Basics
+
 ```ts
 import { Hono } from "hono";
 
@@ -126,6 +136,7 @@ Deno.serve(app.fetch);
 ```
 
 ### Conventions
+
 - 라우트 그룹화: `app.route("/api/users", userRoutes)`
 - Context `c` 하나로 request/response 처리 (Express의 req/res 분리 아님)
 - 입력값 검증: `zValidator` + Zod 조합 사용
@@ -134,6 +145,7 @@ Deno.serve(app.fetch);
 - RPC: `hc<AppType>` 클라이언트로 타입 안전한 API 호출
 
 ### Structure
+
 ```
 api/
 ├── routes/        # 라우트 모듈
@@ -148,6 +160,7 @@ api/
 ```
 
 ### Validation Pattern
+
 ```ts
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
@@ -166,11 +179,12 @@ app.post(
   (c) => {
     const data = c.req.valid("json");
     return c.json({ user: data }, 201);
-  }
+  },
 );
 ```
 
 ### RPC Pattern (Frontend ↔ Backend 타입 공유)
+
 ```ts
 // api/app.ts
 const route = app.get("/hello", (c) => c.json({ message: "Hello" }));
@@ -188,12 +202,14 @@ const res = await client.hello.$get();
 ## Tailwind CSS 4.x Rules
 
 ### Setup
+
 - `tailwind.config.js` 사용하지 않음. CSS-first configuration.
 - CSS 파일에 `@import "tailwindcss"` 한 줄로 시작
 - 컨텐츠 경로 자동 감지 (수동 `content` 배열 불필요)
 - PostCSS, autoprefixer 불필요 (Lightning CSS 내장)
 
 ### Configuration
+
 ```css
 /* styles.css */
 @import "tailwindcss";
@@ -208,6 +224,7 @@ const res = await client.hello.$get();
 ```
 
 ### Conventions
+
 - `@theme` 디렉티브로 디자인 토큰 정의 (JS 설정 아님)
 - OKLCH 색상 공간 사용 권장
 - 컨테이너 쿼리 네이티브 지원: `@container`, `@sm`, `@lg`
@@ -220,12 +237,14 @@ const res = await client.hello.$get();
 ## TypeScript Rules
 
 ### Strict
+
 - `any` 금지. `unknown` 사용 후 타입 가드로 좁히기
 - `as` 타입 단언 최소화. type guard 함수 사용 권장
 - 함수 인자와 반환값에 타입 명시
 - `null`과 `undefined` 명확히 구분
 
 ### Type Patterns
+
 ```tsx
 // Props 인터페이스
 interface ButtonProps {
@@ -243,7 +262,9 @@ type AsyncState<T> =
   | { status: "error"; error: Error };
 
 // 타입 가드
-function isApiError(error: unknown): error is { message: string; code: number } {
+function isApiError(
+  error: unknown,
+): error is { message: string; code: number } {
   return (
     typeof error === "object" &&
     error !== null &&
@@ -254,12 +275,14 @@ function isApiError(error: unknown): error is { message: string; code: number } 
 ```
 
 ### Naming
+
 - 타입/인터페이스: PascalCase (`UserProfile`, `ApiResponse`)
 - `I` 접두사 금지 (`IUser` ❌ → `User` ✅)
 - Props 타입: `컴포넌트명 + Props` (`ButtonProps`)
 - Enum 대신 `as const` 객체 사용 권장
 
 ### Type vs Interface
+
 - 객체 형태: `interface`
 - 유니온, 인터섹션, 유틸리티: `type`
 - Props: `interface`
@@ -269,6 +292,7 @@ function isApiError(error: unknown): error is { message: string; code: number } 
 ## Code Quality
 
 ### General
+
 - `console.log` 디버그용 잔존 금지 (커밋 전 제거)
 - 매직넘버 금지. 상수로 추출
 - 함수는 한 가지 역할만
@@ -277,12 +301,14 @@ function isApiError(error: unknown): error is { message: string; code: number } 
 - 에러 핸들링: try-catch에서 구체적 에러 처리
 
 ### Import Order
+
 1. Deno 표준/외부 라이브러리 (`npm:`, `jsr:`, `@std/`)
 2. 프레임워크 (`fresh`, `hono`, `preact`)
 3. 내부 모듈 (`~/`, `../`, `./`)
 4. 타입 (`type` imports)
 
 ### Git
+
 - Conventional Commits: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`
 - 커밋 메시지는 영어
 - 브랜치: `feat/기능명`, `fix/버그명`, `refactor/대상`

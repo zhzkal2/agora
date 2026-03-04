@@ -4,7 +4,9 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!supabaseUrl || !serviceKey) {
-  console.error("SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 설정되지 않았습니다.");
+  console.error(
+    "SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY 환경변수가 설정되지 않았습니다.",
+  );
   Deno.exit(1);
 }
 
@@ -42,7 +44,10 @@ async function runSql(sql: string, label: string): Promise<boolean> {
     if (err instanceof DOMException && err.name === "TimeoutError") {
       console.error(`  타임아웃: ${label} (${FETCH_TIMEOUT_MS / 1000}초 초과)`);
     } else {
-      console.error(`  네트워크 오류: ${label}`, err instanceof Error ? err.message : err);
+      console.error(
+        `  네트워크 오류: ${label}`,
+        err instanceof Error ? err.message : err,
+      );
     }
     return false;
   }
@@ -60,7 +65,9 @@ const success = await runSql(SCHEMA_SQL, "전체 스키마");
 if (!success) {
   console.log("\n========================================");
   console.log("Supabase REST API로 직접 SQL 실행이 불가합니다.");
-  console.log("아래 SQL을 Supabase 대시보드 > SQL Editor에 붙여넣고 실행해주세요.");
+  console.log(
+    "아래 SQL을 Supabase 대시보드 > SQL Editor에 붙여넣고 실행해주세요.",
+  );
   console.log("========================================\n");
   console.log(SCHEMA_SQL);
   Deno.exit(1);

@@ -53,8 +53,8 @@ export default define.page(async function Home(_ctx) {
           </h1>
           <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">
             비타민B군, 마그네슘 등 주요 영양제의 활성형 성분 함량, 1일 비용,
-            품질 인증을 투명하게 비교합니다. 증상별 맞춤 추천으로
-            나에게 맞는 영양제를 찾아보세요.
+            품질 인증을 투명하게 비교합니다. 증상별 맞춤 추천으로 나에게 맞는
+            영양제를 찾아보세요.
           </p>
           <div class="flex gap-4 justify-center mt-8">
             <a
@@ -94,14 +94,19 @@ export default define.page(async function Home(_ctx) {
                     </span>
                     <span class="text-sm">
                       <span class="text-yellow-500">★</span> {product.rating}
-                      <span class="text-gray-400 ml-1">({product.review_count})</span>
+                      <span class="text-gray-400 ml-1">
+                        ({product.review_count})
+                      </span>
                     </span>
                   </div>
                 </a>
               ))}
             </div>
             <div class="text-center mt-4">
-              <a href="/products" class="text-blue-700 text-sm font-medium hover:underline">
+              <a
+                href="/products"
+                class="text-blue-700 text-sm font-medium hover:underline"
+              >
                 전체 제품 보기 →
               </a>
             </div>
@@ -133,12 +138,12 @@ export default define.page(async function Home(_ctx) {
         <section class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
           <h2 class="text-xl font-bold mb-3">이 사이트에 대해</h2>
           <p class="text-gray-700 leading-relaxed">
-            Agora Supplements는 영양제 성분 정보를 투명하게 비교할 수 있는 사이트입니다.
-            각 제품의 활성형 성분 여부, 정확한 함량, 1일 섭취 비용, GMP·NSF 등
-            품질 인증 정보를 제공합니다. 증상별(피로, 수면, 집중력, 면역력, 스트레스)
-            추천 기능으로 자신의 건강 고민에 맞는 영양제를 찾을 수 있습니다.
-            모든 정보는 제조사 공개 데이터를 기반으로 하며,
-            의학적 진단이나 처방을 대체하지 않습니다.
+            Agora Supplements는 영양제 성분 정보를 투명하게 비교할 수 있는
+            사이트입니다. 각 제품의 활성형 성분 여부, 정확한 함량, 1일 섭취
+            비용, GMP·NSF 등 품질 인증 정보를 제공합니다. 증상별(피로, 수면,
+            집중력, 면역력, 스트레스) 추천 기능으로 자신의 건강 고민에 맞는
+            영양제를 찾을 수 있습니다. 모든 정보는 제조사 공개 데이터를 기반으로
+            하며, 의학적 진단이나 처방을 대체하지 않습니다.
           </p>
         </section>
       </main>

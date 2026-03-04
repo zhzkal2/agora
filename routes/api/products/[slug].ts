@@ -21,7 +21,10 @@ export const handler = define.handlers({
       .single();
 
     if (error) {
-      return Response.json({ error: "제품을 찾을 수 없습니다" }, { status: 404 });
+      return Response.json(
+        { error: "제품을 찾을 수 없습니다", status: 404 },
+        { status: 404 },
+      );
     }
 
     return Response.json(data);

@@ -1,7 +1,8 @@
 import { define } from "../utils.ts";
 import { supabase } from "../utils/supabase.ts";
 
-const BASE_URL = Deno.env.get("BASE_URL") || "https://agora-supplements.deno.dev";
+const BASE_URL = Deno.env.get("BASE_URL") ||
+  "https://agora-supplements.deno.dev";
 
 function escapeXml(str: string): string {
   return str
@@ -14,12 +15,19 @@ function escapeXml(str: string): string {
 export const handler = define.handlers({
   async GET(_ctx) {
     const [productsRes, symptomsRes] = await Promise.all([
-      supabase.from("products").select("slug, updated_at").eq("is_active", true),
+      supabase.from("products").select("slug, updated_at").eq(
+        "is_active",
+        true,
+      ),
       supabase.from("symptoms").select("slug"),
     ]);
 
     if (productsRes.error || symptomsRes.error) {
-      console.error("sitemap: Supabase query failed", productsRes.error, symptomsRes.error);
+      console.error(
+        "sitemap: Supabase query failed",
+        productsRes.error,
+        symptomsRes.error,
+      );
       return new Response("Internal Server Error", { status: 500 });
     }
 
@@ -45,17 +53,22 @@ export const handler = define.handlers({
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls
-  .map(
-    (u) => `  <url>
+${
+      urls
+        .map(
+          (u) =>
+            `  <url>
     <loc>${escapeXml(BASE_URL + u.loc)}</loc>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>${
-      "lastmod" in u && u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : ""
+              "lastmod" in u && u.lastmod
+                ? `\n    <lastmod>${u.lastmod}</lastmod>`
+                : ""
+            }
+  </url>`,
+        )
+        .join("\n")
     }
-  </url>`
-  )
-  .join("\n")}
 </urlset>`;
 
     return new Response(xml, {

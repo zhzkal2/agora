@@ -2,6 +2,9 @@ import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import { supabase } from "../../utils/supabase.ts";
 
+const BASE_URL = Deno.env.get("BASE_URL") ||
+  "https://agora-supplements.deno.dev";
+
 interface IngredientWithProducts {
   relevance_score: number;
   evidence_level: string;
@@ -80,7 +83,7 @@ function buildJsonLd(symptom: Symptom) {
     "about": products.map((p) => ({
       "@type": "Product",
       "name": p.name,
-      "url": `/products/${p.slug}`,
+      "url": `${BASE_URL}/products/${p.slug}`,
     })),
   };
 }
@@ -112,15 +115,24 @@ export const handler = define.handlers({
       return ctx.render(
         <main class="max-w-5xl mx-auto px-4 py-16 text-center">
           <h1 class="text-2xl font-bold">증상을 찾을 수 없습니다</h1>
-          <p class="text-gray-600 mt-2">요청하신 증상 정보가 존재하지 않습니다.</p>
-          <a href="/symptoms" class="text-blue-600 hover:underline mt-4 inline-block">증상 목록으로 돌아가기</a>
+          <p class="text-gray-600 mt-2">
+            요청하신 증상 정보가 존재하지 않습니다.
+          </p>
+          <a
+            href="/symptoms"
+            class="text-blue-600 hover:underline mt-4 inline-block"
+          >
+            증상 목록으로 돌아가기
+          </a>
         </main>,
         { status: 404 },
       );
     }
 
-    const symptom = data as Symptom;
-    symptom.ingredient_symptoms.sort((a, b) => b.relevance_score - a.relevance_score);
+    const symptom = data as unknown as Symptom;
+    symptom.ingredient_symptoms.sort((a, b) =>
+      b.relevance_score - a.relevance_score
+    );
 
     // 추천 제품 목록 (중복 제거, 평점순)
     const productMap = new Map<string, {
@@ -138,7 +150,9 @@ export const handler = define.handlers({
       for (const pi of is.ingredients.product_ingredients) {
         const existing = productMap.get(pi.products.slug);
         if (existing) {
-          existing.ingredients.push(`${is.ingredients.name_ko} ${pi.amount}${pi.unit}`);
+          existing.ingredients.push(
+            `${is.ingredients.name_ko} ${pi.amount}${pi.unit}`,
+          );
         } else {
           productMap.set(pi.products.slug, {
             name: pi.products.name,
@@ -154,7 +168,9 @@ export const handler = define.handlers({
       }
     }
 
-    const recommendedProducts = [...productMap.values()].sort((a, b) => b.rating - a.rating);
+    const recommendedProducts = [...productMap.values()].sort((a, b) =>
+      b.rating - a.rating
+    );
 
     const page = (
       <>
@@ -166,7 +182,9 @@ export const handler = define.handlers({
           />
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: safeJsonLd(buildJsonLd(symptom)) }}
+            dangerouslySetInnerHTML={{
+              __html: safeJsonLd(buildJsonLd(symptom)),
+            }}
           />
         </Head>
 
@@ -181,11 +199,14 @@ export const handler = define.handlers({
 
           <article>
             <section class="mb-8">
-              <h1 class="text-2xl md:text-3xl font-bold">{symptom.name_ko}에 도움되는 영양제</h1>
+              <h1 class="text-2xl md:text-3xl font-bold">
+                {symptom.name_ko}에 도움되는 영양제
+              </h1>
               <p class="text-gray-600 mt-2">
-                {symptom.description}. 아래는 {symptom.name_ko}에 도움이 될 수 있는
-                영양 성분과 해당 성분을 함유한 추천 제품입니다.
-                각 성분의 관련도와 근거 수준을 참고하여 선택하세요.
+                {symptom.description}. 아래는{" "}
+                {symptom.name_ko}에 도움이 될 수 있는 영양 성분과 해당 성분을
+                함유한 추천 제품입니다. 각 성분의 관련도와 근거 수준을 참고하여
+                선택하세요.
               </p>
             </section>
 
@@ -193,16 +214,24 @@ export const handler = define.handlers({
               <h2 class="text-xl font-bold mb-4">관련 영양 성분</h2>
               <div class="space-y-4">
                 {symptom.ingredient_symptoms.map((is, i) => {
-                  const evidence = EVIDENCE_LABELS[is.evidence_level] || EVIDENCE_LABELS.weak;
+                  const evidence = EVIDENCE_LABELS[is.evidence_level] ||
+                    EVIDENCE_LABELS.weak;
                   return (
-                    <div key={i} class="bg-white rounded-lg border border-gray-200 p-5">
+                    <div
+                      key={i}
+                      class="bg-white rounded-lg border border-gray-200 p-5"
+                    >
                       <div class="flex items-start justify-between gap-3">
                         <div>
                           <h3 class="font-bold">{is.ingredients.name_ko}</h3>
-                          <p class="text-sm text-gray-500">{is.ingredients.name}</p>
+                          <p class="text-sm text-gray-500">
+                            {is.ingredients.name}
+                          </p>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                          <span class={`text-xs font-medium px-2 py-1 rounded ${evidence.color}`}>
+                          <span
+                            class={`text-xs font-medium px-2 py-1 rounded ${evidence.color}`}
+                          >
                             {evidence.text}
                           </span>
                           <span class="text-sm font-medium text-blue-700">
@@ -210,7 +239,9 @@ export const handler = define.handlers({
                           </span>
                         </div>
                       </div>
-                      <p class="text-gray-600 text-sm mt-2">{is.ingredients.description}</p>
+                      <p class="text-gray-600 text-sm mt-2">
+                        {is.ingredients.description}
+                      </p>
                     </div>
                   );
                 })}
@@ -223,7 +254,8 @@ export const handler = define.handlers({
                 <div class="space-y-4">
                   {recommendedProducts.map((product) => {
                     const dailyCost = product.servings_per_container > 0
-                      ? (product.price / product.servings_per_container).toFixed(2)
+                      ? (product.price / product.servings_per_container)
+                        .toFixed(2)
                       : null;
 
                     return (
@@ -234,21 +266,29 @@ export const handler = define.handlers({
                       >
                         <div class="flex items-start justify-between gap-4">
                           <div>
-                            <p class="text-xs text-blue-600 font-medium">{product.brand_name}</p>
+                            <p class="text-xs text-blue-600 font-medium">
+                              {product.brand_name}
+                            </p>
                             <h3 class="font-bold mt-1">{product.name}</h3>
                             <p class="text-sm text-gray-600 mt-1">
                               관련 성분: {product.ingredients.join(", ")}
                             </p>
                           </div>
                           <div class="text-right shrink-0">
-                            <p class="text-lg font-bold text-blue-700">${product.price}</p>
+                            <p class="text-lg font-bold text-blue-700">
+                              ${product.price}
+                            </p>
                             {dailyCost && (
-                              <p class="text-xs text-gray-500">1일 ${dailyCost}</p>
+                              <p class="text-xs text-gray-500">
+                                1일 ${dailyCost}
+                              </p>
                             )}
                             <div class="flex items-center gap-1 mt-1 text-sm justify-end">
                               <span class="text-yellow-500">★</span>
                               <span class="font-medium">{product.rating}</span>
-                              <span class="text-gray-400">({product.review_count})</span>
+                              <span class="text-gray-400">
+                                ({product.review_count})
+                              </span>
                             </div>
                           </div>
                         </div>
