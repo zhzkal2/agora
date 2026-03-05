@@ -318,7 +318,7 @@ export const searchBySymptomTool = createTool({
     const { symptom, limit } = input;
     const searchPattern = `%${escapeLike(symptom)}%`;
 
-    // 증상 테이블에서 매칭
+    // 증상 테이블에서 매칭 (활성 제품만 포함)
     const { data: symptomData, error: symptomError } = await supabase
       .from("symptoms")
       .select(`
@@ -329,8 +329,8 @@ export const searchBySymptomTool = createTool({
             name, name_ko, description,
             product_ingredients(
               amount, unit,
-              products(name, slug, price, rating, servings_per_container,
-                brands(name))
+              products!inner(name, slug, price, rating, servings_per_container,
+                is_active, brands(name))
             )
           )
         )
@@ -370,7 +370,8 @@ export const searchBySymptomTool = createTool({
               price: number;
               rating: number;
               servings_per_container: number;
-              brands: { name: string };
+              is_active: boolean;
+              brands: { name: string } | null;
             };
           }[];
         };
@@ -402,6 +403,9 @@ export const searchBySymptomTool = createTool({
 
     for (const is of s.ingredient_symptoms) {
       for (const pi of is.ingredients.product_ingredients) {
+        // 비활성 제품 제외
+        if (!pi.products.is_active) continue;
+
         const existing = productMap.get(pi.products.slug);
         const ingredientStr =
           `${is.ingredients.name_ko} ${pi.amount}${pi.unit}`;
@@ -413,7 +417,7 @@ export const searchBySymptomTool = createTool({
             slug: pi.products.slug,
             price: pi.products.price,
             rating: pi.products.rating,
-            brand_name: pi.products.brands.name,
+            brand_name: pi.products.brands?.name ?? "알 수 없는 브랜드",
             relevant_ingredients: [ingredientStr],
             servings_per_container: pi.products.servings_per_container,
           });
