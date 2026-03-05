@@ -5,6 +5,9 @@
 
 import { useSignal } from "@preact/signals";
 
+// Duration (in ms) for visual feedback before resetting clicked state
+const CLICK_FEEDBACK_DURATION_MS = 2000;
+
 interface AffiliateButtonProps {
   productSlug: string;
   affiliateUrl: string;
@@ -50,10 +53,10 @@ export default function AffiliateButton(
     // 새 탭에서 어필리에이트 URL 열기
     globalThis.open(affiliateUrl, "_blank", "noopener,noreferrer");
 
-    // 잠시 후 클릭 상태 초기화
+    // 시각적 피드백 유지 후 클릭 상태 초기화: 사용자가 "이동 중..." 상태를 충분히 볼 수 있도록 함
     setTimeout(() => {
       isClicked.value = false;
-    }, 2000);
+    }, CLICK_FEEDBACK_DURATION_MS);
   };
 
   return (

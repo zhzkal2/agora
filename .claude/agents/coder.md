@@ -75,10 +75,22 @@ components/ 규칙:
 
 ### Import Order
 
-1. Deno 표준/외부 (npm:, jsr:, @std/)
-2. 프레임워크 (fresh, hono, preact)
-3. 내부 모듈 (~/, ../, ./)
-4. 타입 (type imports)
+**순서**:
+1. Deno 표준/외부 라이브러리 (`npm:`, `jsr:`, `@std/`)
+2. 프레임워크 (`fresh`, `hono`, `preact`)
+3. 내부 모듈 (`~/`, `../`, `./`)
+4. 타입 전용 (`import type`로 명시)
+## AIEO Rules (AI Engine Optimization, 절대 위반 금지)
+
+- 모든 상품 페이지에 JSON-LD 구조화 데이터 포함
+- 시맨틱 HTML: 50-150 단어 자기완결적 청크
+- User-Agent 기반 응답 분기 금지 (클로킹 방지)
+- Islands는 인터랙티브 UI만. AI 봇이 읽어야 할 콘텐츠는 반드시 정적 HTML로
+## Supabase Patterns
+
+- createClient()로 클라이언트 생성 (SUPABASE_URL, SUPABASE_ANON_KEY)
+- 벡터 검색:
+```
 
 ## AIEO Rules (절대 위반 금지)
 

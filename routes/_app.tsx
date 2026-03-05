@@ -15,7 +15,22 @@ export default define.page(function App({ Component }) {
         />
         <meta property="og:site_name" content="Agora Supplements" />
         <meta property="og:type" content="website" />
+        <meta property="og:title" content="Agora Supplements - 영양제 비교 추천" />
+        <meta
+          property="og:description"
+          content="영양제 성분, 함량, 가격을 비교하고 증상별 최적의 영양제를 추천합니다."
+        />
+        <meta property="og:url" content="https://agora-supplements.com" />
         <link rel="icon" href="/favicon.ico" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Agora Supplements",
+            "description": "영양제 성분, 함량, 가격을 비교하고 증상별 최적의 영양제를 추천합니다.",
+            "url": "https://agora-supplements.com"
+          })}
+        </script>
       </head>
       <body class="bg-gray-50 text-gray-900 min-h-screen">
         <nav class="bg-white border-b border-gray-200 px-4 py-3">
