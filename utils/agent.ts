@@ -487,7 +487,7 @@ export const checkInteractionTool = createTool({
     "복수 영양제 병용 시 안전성을 확인할 때 사용하세요.",
   inputSchema: z.object({
     ingredients: z.array(z.string().trim().min(1)).min(2).max(MAX_INGREDIENTS)
-      .describe("확인할 성분 이름 목록 (최소 2개, 최대 12개)"),
+      .describe(`확인할 성분 이름 목록 (최소 2개, 최대 ${MAX_INGREDIENTS}개)`),
   }),
   outputSchema: z.object({
     interactions: z.array(z.object({
@@ -583,7 +583,7 @@ export const getDosageGuideTool = createTool({
 
     // DB에서 성분 정보 조회
     const escapedIngredient = escapeLike(ingredient);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("ingredients")
       .select("name, name_ko, description")
       .or(
@@ -591,6 +591,20 @@ export const getDosageGuideTool = createTool({
       )
       .limit(1)
       .single();
+
+    if (error) {
+      console.error("[getDosageGuide] DB 조회 실패:", error.message);
+      return {
+        ingredient_name: ingredient,
+        recommended_daily:
+          "데이터베이스 조회에 실패했습니다. 잠시 후 다시 시도해주세요.",
+        upper_limit: "정보를 불러올 수 없습니다.",
+        best_time: "정보를 불러올 수 없습니다.",
+        with_food: "정보를 불러올 수 없습니다.",
+        precautions: ["시스템 오류로 정보를 제공할 수 없습니다"],
+        special_notes: "잠시 후 다시 시도해주세요.",
+      };
+    }
 
     if (data) {
       return {
