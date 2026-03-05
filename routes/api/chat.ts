@@ -117,8 +117,17 @@ export const handler = define.handlers({
       );
     }
 
+    let body: Record<string, unknown>;
     try {
-      const body = await ctx.req.json();
+      body = await ctx.req.json();
+    } catch {
+      return Response.json(
+        { error: "잘못된 JSON 형식입니다.", status: 400 },
+        { status: 400 },
+      );
+    }
+
+    try {
       const message = body.message as string | undefined;
 
       // 입력 검증

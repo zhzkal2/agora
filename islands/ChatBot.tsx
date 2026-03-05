@@ -139,6 +139,7 @@ export default function ChatBot() {
             stroke-width="2"
             stroke="currentColor"
             class="w-6 h-6"
+            aria-hidden="true"
           >
             <path
               stroke-linecap="round"
@@ -173,6 +174,7 @@ export default function ChatBot() {
                 stroke-width="2"
                 stroke="currentColor"
                 class="w-5 h-5"
+                aria-hidden="true"
               >
                 <path
                   stroke-linecap="round"
@@ -209,14 +211,8 @@ export default function ChatBot() {
                 <div class="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
                   <div class="flex gap-1.5">
                     <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                    <div
-                      class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style="animation-delay: 0.1s"
-                    />
-                    <div
-                      class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style="animation-delay: 0.2s"
-                    />
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.1s]" />
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]" />
                   </div>
                 </div>
               </div>

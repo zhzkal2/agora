@@ -198,11 +198,13 @@ const INGREDIENT_NAME_MAPPING: Record<string, string> = {
 export const searchProductsTool = createTool({
   id: "search_products",
   description:
-    "키워드로 영양제 제품을 검색합니다. 제품명, 브랜드명, 성분명으로 검색할 때 사용하세요. " +
+    "키워드로 영양제 제품을 검색합니다. 제품명과 설명에서 검색합니다. " +
     "예: '비타민B', 'VitaCore', '마그네슘'",
   inputSchema: z.object({
-    keyword: z.string().describe("검색 키워드 (제품명, 브랜드명, 성분명)"),
-    limit: z.number().default(5).describe("최대 반환 수"),
+    keyword: z.string().trim().min(1).describe(
+      "검색 키워드 (제품명, 설명)",
+    ),
+    limit: z.number().min(1).max(20).default(5).describe("최대 반환 수"),
   }),
   outputSchema: z.object({
     products: z.array(z.object({
@@ -287,10 +289,10 @@ export const searchBySymptomTool = createTool({
     "'피로', '수면', '집중력', '면역력', '스트레스' 같은 증상 키워드를 사용하세요. " +
     "관련 성분과 해당 성분을 함유한 제품을 함께 반환합니다.",
   inputSchema: z.object({
-    symptom: z.string().describe(
+    symptom: z.string().trim().min(1).describe(
       "증상 또는 효능 키워드 (예: 피로, 수면, 집중력)",
     ),
-    limit: z.number().default(5).describe("최대 반환 제품 수"),
+    limit: z.number().min(1).max(20).default(5).describe("최대 반환 제품 수"),
   }),
   outputSchema: z.object({
     symptom_name: z.string(),
@@ -519,7 +521,9 @@ export const getDosageGuideTool = createTool({
     "특정 영양 성분의 권장 복용량, 복용 시간, 주의사항을 안내합니다. " +
     "'비타민B12 얼마나 먹어야 해?', '마그네슘 복용법' 같은 질문에 사용하세요.",
   inputSchema: z.object({
-    ingredient: z.string().describe("성분 이름 (예: 비타민B12, 마그네슘)"),
+    ingredient: z.string().trim().min(1).describe(
+      "성분 이름 (예: 비타민B12, 마그네슘)",
+    ),
   }),
   outputSchema: z.object({
     ingredient_name: z.string(),

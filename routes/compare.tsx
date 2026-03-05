@@ -38,11 +38,16 @@ function buildItemListJsonLd(
 }
 
 export default define.page(async function ComparePage(ctx) {
+  const MAX_COMPARE_SLUGS = 4;
   const slugsParam = ctx.url.searchParams.get("slugs") ?? "";
-  const initialSlugs = slugsParam
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const initialSlugs = [
+    ...new Set(
+      slugsParam
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
+  ].slice(0, MAX_COMPARE_SLUGS);
 
   // 전체 활성 제품 목록 (선택지용)
   let allProducts: { name: string; slug: string }[] = [];

@@ -20,6 +20,17 @@ export default function AffiliateButton(
 
   const handleClick = () => {
     if (isClicked.value) return;
+
+    // affiliate URL 프로토콜 검증 (http/https만 허용)
+    try {
+      const parsed = new URL(affiliateUrl);
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        return;
+      }
+    } catch {
+      return;
+    }
+
     isClicked.value = true;
 
     // 비동기로 클릭 로그 기록 (응답 대기 안 함)
@@ -60,6 +71,7 @@ export default function AffiliateButton(
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -78,6 +90,7 @@ export default function AffiliateButton(
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"

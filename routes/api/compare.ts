@@ -134,7 +134,16 @@ export const handler = define.handlers({
         .map((slug) => products.find((p) => p.slug === slug))
         .filter(Boolean);
 
-      return Response.json({ products: ordered });
+      // 부분 매칭: 누락된 slug 알림
+      const foundSlugs = new Set(products.map((p) => p.slug));
+      const missingSlugs = slugs.filter((s) => !foundSlugs.has(s));
+
+      const response: Record<string, unknown> = { products: ordered };
+      if (missingSlugs.length > 0) {
+        response.missing_slugs = missingSlugs;
+      }
+
+      return Response.json(response);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "알 수 없는 오류";
       console.error("[compare] 오류:", msg);

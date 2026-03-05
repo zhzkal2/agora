@@ -4,7 +4,7 @@
  */
 
 import { useSignal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import type { CompareIngredient, CompareProduct } from "../types/index.ts";
 
 interface ProductCompareProps {
@@ -20,6 +20,9 @@ export default function ProductCompare(
   const error = useSignal<string | null>(null);
   const selectedSlugs = useSignal<string[]>(initialSlugs);
 
+  /** race condition 방어를 위한 요청 시퀀스 카운터 */
+  const latestRequestId = useRef(0);
+
   const fetchCompareData = async (slugs: string[]) => {
     if (slugs.length < 2) {
       products.value = [];
@@ -29,10 +32,14 @@ export default function ProductCompare(
     isLoading.value = true;
     error.value = null;
 
+    const requestId = ++latestRequestId.current;
+
     try {
-      const resp = await fetch(
-        `/api/compare?slugs=${slugs.join(",")}`,
-      );
+      const params = new URLSearchParams({ slugs: slugs.join(",") });
+      const resp = await fetch(`/api/compare?${params.toString()}`);
+
+      // 이전 요청의 응답이면 무시
+      if (requestId !== latestRequestId.current) return;
 
       if (!resp.ok) {
         const data = await resp.json().catch(() => null);
@@ -43,9 +50,13 @@ export default function ProductCompare(
       const data = await resp.json();
       products.value = data.products;
     } catch (_err) {
+      // 이전 요청의 에러이면 무시
+      if (requestId !== latestRequestId.current) return;
       error.value = "네트워크 오류가 발생했습니다.";
     } finally {
-      isLoading.value = false;
+      if (requestId === latestRequestId.current) {
+        isLoading.value = false;
+      }
     }
   };
 
