@@ -24,7 +24,7 @@ AI에 최적화된 영양제 비교 사이트 + AI 챗봇 상담 (AIEO: AI Engin
 | —     | CodeRabbit 코드 리뷰 (5라운드) | ✅ 완료   | `feature/mvp-phase1-2` |
 | —     | LangChain → Mastra 의존성 교체 | ✅ 완료   | `feat/phase3-agent`    |
 | 3     | 미들웨어 + 봇 로깅             | ✅ 완료   | `feat/phase3-agent`    |
-| 4     | 유저 웹앱 (챗봇 + Agent)       | 🔲 미착수 |                        |
+| 4     | 유저 웹앱 (챗봇 + Agent)       | ✅ 완료   | `feat/phase4-agent`    |
 | 5     | 배포 + AIEO 실험               | 🔲 미착수 |                        |
 | 6     | 확장 (GPT Store, MCP 등)       | 🔲 미착수 |                        |
 
@@ -144,6 +144,58 @@ CodeRabbit CLI + GitHub PR 리뷰를 통해 총 5라운드 수정:
 
 ---
 
+## Phase 4: 유저 웹앱 + AI Agent (완료)
+
+### AI Agent (Mastra)
+
+| 파일             | 역할                                                           |
+| ---------------- | -------------------------------------------------------------- |
+| `utils/agent.ts` | Mastra Agent + 4개 Tool (Claude claude-sonnet-4-20250514 모델) |
+
+Agent Tools:
+
+| Tool               | ID                           | 데이터 소스                  |
+| ------------------ | ---------------------------- | ---------------------------- |
+| 키워드 검색        | search_products              | Supabase ilike 검색          |
+| 증상 기반 검색     | search_by_symptom            | symptoms 조인 체인           |
+| 성분 상호작용 체크 | check_ingredient_interaction | 정적 데이터 (8개 상호작용쌍) |
+| 복용법 안내        | get_dosage_guide             | 정적 데이터 (6개 성분) + DB  |
+
+### API 엔드포인트
+
+| 엔드포인트     | 메서드 | 역할                        |
+| -------------- | ------ | --------------------------- |
+| `/api/chat`    | POST   | AI 챗봇 (Agent.generate)    |
+| `/api/click`   | POST   | 어필리에이트 클릭 로깅      |
+| `/api/compare` | GET    | 제품 비교 데이터 (최대 4개) |
+
+### Islands (클라이언트 hydration)
+
+| Island                | 역할                                     |
+| --------------------- | ---------------------------------------- |
+| `ChatBot.tsx`         | AI 상담 챗봇 (플로팅 버튼 + 채팅 패널)   |
+| `AffiliateButton.tsx` | 어필리에이트 버튼 + 클릭 추적            |
+| `ProductCompare.tsx`  | 제품 비교 테이블 (토글 선택, URL 동기화) |
+
+### 페이지 변경
+
+- `_app.tsx`: ChatBot 전역 배치, "비교" 내비게이션 추가
+- `index.tsx`: AI 상담 안내 문구 추가
+- `products/[slug].tsx`: AffiliateButton 추가
+- `products/index.tsx`: 비교 페이지 링크 추가
+- `compare.tsx`: 신규 비교 페이지
+
+### Mastra 버전 (실제 설치)
+
+| 패키지              | 버전      |
+| ------------------- | --------- |
+| `@mastra/core`      | `^1.9.0`  |
+| `mastra`            | `^1.3.6`  |
+| `@ai-sdk/anthropic` | `^3.0.56` |
+| `zod`               | `^4.3.6`  |
+
+---
+
 ## 핵심 기술 결정
 
 ### 확정된 스택
@@ -182,13 +234,13 @@ CodeRabbit CLI + GitHub PR 리뷰를 통해 총 5라운드 수정:
 - [x] AI 봇 접근 로깅 (bot_logs 테이블)
 - [x] 차단 봇 403 응답 (Bytespider, CCBot)
 
-### Phase 4: 유저 웹앱 + AI Agent
+### Phase 4: 유저 웹앱 + AI Agent (완료)
 
-- [ ] Mastra Agent 설정 (Claude API 연동)
-- [ ] Agent Tools: 키워드 검색, 시맨틱 검색, 성분 충돌, 복용법
-- [ ] 챗봇 Island (인터랙티브 UI)
-- [ ] 어필리에이트 링크 + 클릭 추적
-- [ ] 상품 비교 인터페이스
+- [x] Mastra Agent 설정 (Claude API 연동, v1.9.0)
+- [x] Agent Tools: 키워드 검색, 증상 검색, 성분 상호작용, 복용법 안내
+- [x] 챗봇 Island (플로팅 UI + /api/chat)
+- [x] 어필리에이트 링크 + 클릭 추적 (/api/click)
+- [x] 상품 비교 인터페이스 (/compare + /api/compare)
 
 ### Phase 5: 배포 + 실험
 
@@ -211,32 +263,45 @@ CodeRabbit CLI + GitHub PR 리뷰를 통해 총 5라운드 수정:
 agora/
 ├── assets/styles.css        # Tailwind CSS 4.x 설정
 ├── components/              # 서버 전용 컴포넌트 (비어있음)
-├── islands/                 # 클라이언트 Island (비어있음, Phase 4에서 추가)
+├── islands/
+│   ├── ChatBot.tsx          # AI 챗봇 (플로팅 버튼 + 채팅 패널)
+│   ├── AffiliateButton.tsx  # 어필리에이트 버튼 + 클릭 추적
+│   └── ProductCompare.tsx   # 제품 비교 인터랙티브 테이블
+├── types/
+│   └── index.ts             # 공유 타입 정의 (Chat, Product, Compare)
 ├── routes/
-│   ├── _app.tsx             # 레이아웃 (내비게이션, 푸터)
+│   ├── _app.tsx             # 레이아웃 (내비게이션, 푸터, ChatBot)
 │   ├── _middleware.ts       # 봇 탐지 미들웨어 (로깅 + 차단)
 │   ├── index.tsx            # 메인 페이지
+│   ├── compare.tsx          # 제품 비교 페이지
 │   ├── products/
 │   │   ├── index.tsx        # 제품 목록 (JSON-LD, OG)
-│   │   └── [slug].tsx       # 제품 상세 (JSON-LD, 성분 테이블)
+│   │   └── [slug].tsx       # 제품 상세 (JSON-LD, AffiliateButton)
 │   ├── symptoms/
 │   │   ├── index.tsx        # 증상 목록 (JSON-LD, OG)
 │   │   └── [slug].tsx       # 증상 상세 (JSON-LD, 추천 제품)
 │   ├── api/
+│   │   ├── chat.ts          # POST /api/chat (AI Agent)
+│   │   ├── click.ts         # POST /api/click (어필리에이트 추적)
+│   │   ├── compare.ts       # GET /api/compare (제품 비교)
 │   │   ├── products.ts      # GET /api/products
 │   │   └── products/[slug].ts
 │   ├── robots.txt.ts        # 동적 robots.txt
 │   └── sitemap.xml.ts       # 동적 sitemap
 ├── scripts/                 # DB 유틸리티
 ├── setup/                   # 페이즈 완료 로그
-├── utils/supabase.ts        # Supabase 클라이언트 (anon key)
-├── utils/supabase-admin.ts  # Supabase 서비스 클라이언트 (service_role)
-├── utils/bot-detect.ts      # User-Agent 봇 탐지 유틸리티
+├── utils/
+│   ├── supabase.ts          # Supabase 클라이언트 (anon key)
+│   ├── supabase-admin.ts    # Supabase 서비스 클라이언트 (service_role)
+│   ├── bot-detect.ts        # User-Agent 봇 탐지 유틸리티
+│   └── agent.ts             # Mastra AI Agent + 4 Tools
 ├── utils.ts                 # State 타입 + define 헬퍼
 ├── main.ts                  # Fresh 앱 진입점
 ├── deno.json                # 의존성 + 태스크
 ├── AIEO_MVP_v1.0.md         # 원본 설계 문서
-├── AIEO_MVP_v1.1.md         # 변경사항 문서
+├── AIEO_MVP_v1.1.md         # 변경사항 문서 (4건)
+├── AIEO_MVP_v1.2.md         # 변경사항 문서 (Mastra 교체, 미들웨어)
+├── AIEO_MVP_v1.3.md         # 변경사항 문서 (Phase 4 구현)
 └── PROJECT_STATUS.md         # ← 이 파일
 ```
 
@@ -250,4 +315,6 @@ agora/
   클로킹 방지, llms.txt)
 - [AIEO_MVP_v1.2.md](./AIEO_MVP_v1.2.md) — 변경사항 2건 (LangChain→Mastra, 봇
   미들웨어 구현)
+- [AIEO_MVP_v1.3.md](./AIEO_MVP_v1.3.md) — 변경사항 5건 (Phase 4: Agent, 챗봇,
+  어필리에이트, 비교, 통합)
 - [setup/](./setup/) — 페이즈별 작업 로그
