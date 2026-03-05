@@ -1,6 +1,7 @@
 import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import { supabase } from "../../utils/supabase.ts";
+import AffiliateButton from "../../islands/AffiliateButton.tsx";
 
 interface ProductIngredient {
   amount: number;
@@ -29,6 +30,7 @@ interface Product {
   certification: string[];
   rating: number;
   review_count: number;
+  affiliate_url: string | null;
   brands: {
     name: string;
     slug: string;
@@ -109,7 +111,7 @@ export const handler = define.handlers({
       .select(`
         id, name, slug, subtitle, description, price, currency,
         serving_size, servings_per_container, form, certification,
-        rating, review_count,
+        rating, review_count, affiliate_url,
         brands(name, slug, origin, concept),
         product_ingredients(amount, unit, daily_value_pct, form,
           ingredients(name, name_ko, category, description))
@@ -218,6 +220,17 @@ export const handler = define.handlers({
                 ))}
               </div>
             </section>
+
+            {/* 어필리에이트 구매 버튼 */}
+            {product.affiliate_url && (
+              <section class="mb-8">
+                <AffiliateButton
+                  productSlug={product.slug}
+                  affiliateUrl={product.affiliate_url}
+                  source="product_page"
+                />
+              </section>
+            )}
 
             {/* 제품 설명 (50-150 단어 자기완결적 청크) */}
             <section class="mb-8 bg-white rounded-lg border border-gray-200 p-6">

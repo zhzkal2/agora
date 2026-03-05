@@ -1,4 +1,5 @@
 import { define } from "../utils.ts";
+import ChatBot from "../islands/ChatBot.tsx";
 import "../assets/styles.css";
 
 export default define.page(function App({ Component }) {
@@ -24,6 +25,7 @@ export default define.page(function App({ Component }) {
             </a>
             <div class="flex gap-6 text-sm">
               <a href="/products" class="hover:text-blue-700">제품</a>
+              <a href="/compare" class="hover:text-blue-700">비교</a>
               <a href="/symptoms" class="hover:text-blue-700">증상별 추천</a>
             </div>
           </div>
@@ -38,6 +40,7 @@ export default define.page(function App({ Component }) {
             <p class="mt-1">영양제 복용 전 전문가와 상담하시기 바랍니다.</p>
           </div>
         </footer>
+        <ChatBot />
       </body>
     </html>
   );

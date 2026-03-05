@@ -128,12 +128,27 @@ export const handler = define.handlers({
 
         <main class="max-w-5xl mx-auto px-4 py-8">
           <section class="mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold">영양제 제품 비교</h1>
-            <p class="text-gray-600 mt-2">
-              비타민B군, 마그네슘 등 주요 영양제의 성분 함량, 가격, 인증 정보를
-              비교합니다. 각 제품의 활성형 성분 여부, 1일 비용, GMP/NSF 등 품질
-              인증을 확인하여 자신에게 맞는 영양제를 선택하세요.
-            </p>
+            <div class="flex items-start justify-between flex-wrap gap-4">
+              <div>
+                <h1 class="text-2xl md:text-3xl font-bold">영양제 제품 비교</h1>
+                <p class="text-gray-600 mt-2">
+                  비타민B군, 마그네슘 등 주요 영양제의 성분 함량, 가격, 인증
+                  정보를 비교합니다. 각 제품의 활성형 성분 여부, 1일 비용,
+                  GMP/NSF 등 품질 인증을 확인하여 자신에게 맞는 영양제를
+                  선택하세요.
+                </p>
+              </div>
+              {products.length >= 2 && (
+                <a
+                  href={`/compare?slugs=${
+                    products.slice(0, 2).map((p) => p.slug).join(",")
+                  }`}
+                  class="shrink-0 bg-white text-blue-700 border border-blue-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+                >
+                  제품 비교하기
+                </a>
+              )}
+            </div>
           </section>
 
           {products.length === 0
