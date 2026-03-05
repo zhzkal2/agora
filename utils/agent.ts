@@ -13,6 +13,13 @@ import { supabase } from "./supabase.ts";
 const MASTRA_MODEL = Deno.env.get("MASTRA_MODEL") ??
   "anthropic/claude-sonnet-4-20250514";
 
+// ─── 상수 ─────────────────────────────────────────────────────────
+
+/** Tool 쿼리 결과 최대 반환 수 */
+const TOOL_RESULT_LIMIT_MAX = 20;
+/** 상호작용 체크 최대 성분 수 (O(n²) 방어) */
+const MAX_INGREDIENTS = 12;
+
 // ─── ILIKE 와일드카드 이스케이프 ─────────────────────────────────
 
 /** ILIKE 쿼리에서 사용자 입력의 특수 와일드카드 문자를 이스케이프 */
@@ -22,6 +29,50 @@ function escapeLike(input: string): string {
     .replace(/%/g, "\\%")
     .replace(/_/g, "\\_");
 }
+
+// ─── Zod 스키마: DB 응답 런타임 검증 ──────────────────────────────
+
+const ProductRowSchema = z.object({
+  name: z.string(),
+  slug: z.string(),
+  price: z.number(),
+  rating: z.number(),
+  review_count: z.number(),
+  description: z.string(),
+  form: z.string(),
+  serving_size: z.string(),
+  servings_per_container: z.number(),
+  certification: z.array(z.string()).nullable(),
+  brands: z.object({ name: z.string() }).nullable(),
+});
+
+const SymptomRowSchema = z.object({
+  name: z.string(),
+  name_ko: z.string(),
+  description: z.string(),
+  ingredient_symptoms: z.array(z.object({
+    relevance_score: z.number(),
+    evidence_level: z.string(),
+    ingredients: z.object({
+      name: z.string(),
+      name_ko: z.string(),
+      description: z.string(),
+      product_ingredients: z.array(z.object({
+        amount: z.number(),
+        unit: z.string(),
+        products: z.object({
+          name: z.string(),
+          slug: z.string(),
+          price: z.number(),
+          rating: z.number(),
+          servings_per_container: z.number(),
+          is_active: z.boolean(),
+          brands: z.object({ name: z.string() }).nullable(),
+        }),
+      })),
+    }),
+  })),
+});
 
 // ─── 정적 데이터: 영양제 상호작용 ────────────────────────────────
 
@@ -204,7 +255,8 @@ export const searchProductsTool = createTool({
     keyword: z.string().trim().min(1).describe(
       "검색 키워드 (제품명, 설명)",
     ),
-    limit: z.number().int().min(1).max(20).default(5).describe("최대 반환 수"),
+    limit: z.number().int().min(1).max(TOOL_RESULT_LIMIT_MAX).default(5)
+      .describe("최대 반환 수"),
   }),
   outputSchema: z.object({
     products: z.array(z.object({
@@ -246,27 +298,19 @@ export const searchProductsTool = createTool({
       return { products: [], total: 0 };
     }
 
-    interface ProductRow {
-      name: string;
-      slug: string;
-      price: number;
-      rating: number;
-      review_count: number;
-      description: string;
-      form: string;
-      serving_size: string;
-      servings_per_container: number;
-      certification: string[];
-      brands: { name: string };
+    const parsed = z.array(ProductRowSchema).safeParse(data ?? []);
+    if (!parsed.success) {
+      console.error("[searchProducts] 응답 검증 실패:", parsed.error.message);
+      return { products: [], total: 0 };
     }
 
-    const products = (data as unknown as ProductRow[]).map((p) => ({
+    const products = parsed.data.map((p) => ({
       name: p.name,
       slug: p.slug,
       price: p.price,
       rating: p.rating,
       review_count: p.review_count,
-      brand_name: p.brands.name,
+      brand_name: p.brands?.name ?? "알 수 없는 브랜드",
       description: p.description,
       form: p.form,
       serving_size: p.serving_size,
@@ -292,9 +336,8 @@ export const searchBySymptomTool = createTool({
     symptom: z.string().trim().min(1).describe(
       "증상 또는 효능 키워드 (예: 피로, 수면, 집중력)",
     ),
-    limit: z.number().int().min(1).max(20).default(5).describe(
-      "최대 반환 제품 수",
-    ),
+    limit: z.number().int().min(1).max(TOOL_RESULT_LIMIT_MAX).default(5)
+      .describe("최대 반환 제품 수"),
   }),
   outputSchema: z.object({
     symptom_name: z.string(),
@@ -320,7 +363,7 @@ export const searchBySymptomTool = createTool({
     const { symptom, limit } = input;
     const searchPattern = `%${escapeLike(symptom)}%`;
 
-    // 증상 테이블에서 매칭 (활성 제품만 포함)
+    // 증상 테이블에서 매칭 (활성 제품만 포함, 이름순 정렬)
     const { data: symptomData, error: symptomError } = await supabase
       .from("symptoms")
       .select(`
@@ -340,6 +383,7 @@ export const searchBySymptomTool = createTool({
       .or(
         `name_ko.ilike.${searchPattern},name.ilike.${searchPattern},description.ilike.${searchPattern}`,
       )
+      .order("name_ko")
       .limit(1)
       .single();
 
@@ -352,35 +396,18 @@ export const searchBySymptomTool = createTool({
       };
     }
 
-    interface SymptomRow {
-      name: string;
-      name_ko: string;
-      description: string;
-      ingredient_symptoms: {
-        relevance_score: number;
-        evidence_level: string;
-        ingredients: {
-          name: string;
-          name_ko: string;
-          description: string;
-          product_ingredients: {
-            amount: number;
-            unit: string;
-            products: {
-              name: string;
-              slug: string;
-              price: number;
-              rating: number;
-              servings_per_container: number;
-              is_active: boolean;
-              brands: { name: string } | null;
-            };
-          }[];
-        };
-      }[];
+    const parsed = SymptomRowSchema.safeParse(symptomData);
+    if (!parsed.success) {
+      console.error("[searchBySymptom] 응답 검증 실패:", parsed.error.message);
+      return {
+        symptom_name: symptom,
+        symptom_description: "응답 데이터 형식이 올바르지 않습니다.",
+        ingredients: [],
+        products: [],
+      };
     }
 
-    const s = symptomData as unknown as SymptomRow;
+    const s = parsed.data;
 
     const ingredients = s.ingredient_symptoms
       .sort((a, b) => b.relevance_score - a.relevance_score)
@@ -459,9 +486,8 @@ export const checkInteractionTool = createTool({
     "두 가지 이상의 영양 성분 간 상호작용(충돌, 시너지)을 확인합니다. " +
     "복수 영양제 병용 시 안전성을 확인할 때 사용하세요.",
   inputSchema: z.object({
-    ingredients: z.array(z.string().trim().min(1)).min(2).describe(
-      "확인할 성분 이름 목록 (최소 2개)",
-    ),
+    ingredients: z.array(z.string().trim().min(1)).min(2).max(MAX_INGREDIENTS)
+      .describe("확인할 성분 이름 목록 (최소 2개, 최대 12개)"),
   }),
   outputSchema: z.object({
     interactions: z.array(z.object({
