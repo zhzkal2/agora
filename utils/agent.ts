@@ -204,7 +204,7 @@ export const searchProductsTool = createTool({
     keyword: z.string().trim().min(1).describe(
       "검색 키워드 (제품명, 설명)",
     ),
-    limit: z.number().min(1).max(20).default(5).describe("최대 반환 수"),
+    limit: z.number().int().min(1).max(20).default(5).describe("최대 반환 수"),
   }),
   outputSchema: z.object({
     products: z.array(z.object({
@@ -292,7 +292,9 @@ export const searchBySymptomTool = createTool({
     symptom: z.string().trim().min(1).describe(
       "증상 또는 효능 키워드 (예: 피로, 수면, 집중력)",
     ),
-    limit: z.number().min(1).max(20).default(5).describe("최대 반환 제품 수"),
+    limit: z.number().int().min(1).max(20).default(5).describe(
+      "최대 반환 제품 수",
+    ),
   }),
   outputSchema: z.object({
     symptom_name: z.string(),
