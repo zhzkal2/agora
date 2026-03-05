@@ -1,7 +1,7 @@
 # AIEO MVP 설계 문서 — 변경사항 (v1.3)
 
 > **문서 작성일**: 2026-03-04 **브랜치**: `feat/phase4-agent`
-
+>
 > v1.0 + v1.1 + v1.2 대비 5건의 변경사항을 정리합니다. Phase 4 (유저 웹앱 + AI
 > Agent) 구현 완료에 따른 설계 반영입니다. 각 변경사항은 원본 섹션 번호와 위치를
 > 명시합니다.
@@ -256,7 +256,7 @@ Agent 시스템 프롬프트 주요 규칙:
 
 #### 파일: `routes/api/chat.ts`
 
-```
+```text
 POST /api/chat
 ├── Body: { message: string, history: ChatMessage[] }
 ├── 검증: message 1000자 이내, history 20턴 이내
@@ -278,14 +278,14 @@ v1.0 섹션 5 "유저 흐름 2"에서 설계한 어필리에이트 클릭 추적
 
 기존:
 
-```
+```text
 agora/
 ├── islands/           # (비어있음 — Phase 4 이전)
 ```
 
 변경:
 
-```
+```text
 agora/
 ├── islands/
 │   ├── ChatBot.tsx         # ← AI 챗봇 (플로팅 버튼 + 채팅 패널)
@@ -297,7 +297,7 @@ agora/
 
 #### ChatBot Island
 
-```
+```text
 사용자 → 플로팅 버튼 (우측 하단) → 채팅 패널 열림
      → 메시지 입력 → POST /api/chat → Mastra Agent
      → AI 응답 표시 (마크다운 포맷: 링크, 볼드, 줄바꿈)
@@ -321,7 +321,7 @@ UI 구성:
 
 #### AffiliateButton Island
 
-```
+```text
 사용자 → "구매하러 가기" 클릭
      → POST /api/click (fire-and-forget, 응답 비대기)
      → 새 탭에서 affiliate_url 열기
@@ -343,7 +343,7 @@ interface AffiliateButtonProps {
 
 #### 파일: `routes/api/click.ts`
 
-```
+```text
 POST /api/click
 ├── Body: { product_slug, referrer, source, affiliate_url }
 ├── 검증: product_slug 필수, source 유효값, referrer 2000자 제한
@@ -376,7 +376,7 @@ v1.0에서는 제품 비교 기능이 명시적으로 설계되지 않았으나,
 
 #### 파일: `routes/api/compare.ts`
 
-```
+```text
 GET /api/compare?slugs=slug1,slug2[,slug3,slug4]
 ├── 검증: slugs 2~4개
 ├── Supabase: products + brands + product_ingredients + ingredients 조인
@@ -417,7 +417,7 @@ CompareProduct 구조:
 
 ### 반영 위치 3: 섹션 11 — 라우트 파일 추가
 
-```
+```text
 agora/
 ├── routes/
 │   ├── compare.tsx         # ← 추가: 제품 비교 페이지

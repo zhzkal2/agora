@@ -53,9 +53,12 @@ export default function ChatBot() {
       }
 
       const data = await resp.json();
+      const reply = typeof data?.reply === "string"
+        ? data.reply
+        : "응답 형식이 올바르지 않습니다. 잠시 후 다시 시도해주세요.";
       messages.value = [...messages.value, {
         role: "assistant",
-        content: data.reply,
+        content: reply,
       }];
     } catch (_err) {
       messages.value = [...messages.value, {
@@ -227,7 +230,9 @@ export default function ChatBot() {
                 type="text"
                 value={input.value}
                 onInput={(e) => {
-                  input.value = (e.target as HTMLInputElement).value;
+                  if (e.currentTarget instanceof HTMLInputElement) {
+                    input.value = e.currentTarget.value;
+                  }
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder="증상이나 영양제에 대해 물어보세요..."

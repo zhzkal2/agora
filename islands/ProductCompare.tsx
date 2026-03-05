@@ -100,7 +100,8 @@ export default function ProductCompare(
     const names = new Set<string>();
     for (const p of products.value) {
       for (const ing of p.ingredients) {
-        names.add(ing.name_ko);
+        const label = (ing.name_ko || ing.name || "").trim();
+        if (label) names.add(label);
       }
     }
     return [...names];
@@ -108,9 +109,11 @@ export default function ProductCompare(
 
   const getIngredient = (
     product: CompareProduct,
-    nameKo: string,
+    label: string,
   ): CompareIngredient | undefined => {
-    return product.ingredients.find((i) => i.name_ko === nameKo);
+    return product.ingredients.find((i) =>
+      (i.name_ko || i.name || "").trim() === label
+    );
   };
 
   /** 특정 필드에서 최고값 하이라이트를 위한 유틸 */

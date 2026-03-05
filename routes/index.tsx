@@ -9,7 +9,7 @@ interface TopProduct {
   price: number;
   rating: number;
   review_count: number;
-  brands: { name: string };
+  brands: { name: string } | null;
 }
 
 interface Symptom {
@@ -87,7 +87,7 @@ export default define.page(async function Home(_ctx) {
                   class="block bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 hover:shadow-md transition-all"
                 >
                   <p class="text-xs text-blue-600 font-medium">
-                    {product.brands.name}
+                    {product.brands?.name ?? "알 수 없는 브랜드"}
                   </p>
                   <h3 class="font-bold mt-1">{product.name}</h3>
                   <p class="text-sm text-gray-500 mt-1">{product.subtitle}</p>

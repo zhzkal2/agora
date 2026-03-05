@@ -25,7 +25,9 @@ export const handler = define.handlers({
       );
     }
 
-    const slugs = slugsParam.split(",").map((s) => s.trim()).filter(Boolean);
+    const slugs = [
+      ...new Set(slugsParam.split(",").map((s) => s.trim()).filter(Boolean)),
+    ];
 
     if (slugs.length < 2) {
       return Response.json(

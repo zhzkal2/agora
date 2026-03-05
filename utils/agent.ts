@@ -453,7 +453,7 @@ export const checkInteractionTool = createTool({
     "두 가지 이상의 영양 성분 간 상호작용(충돌, 시너지)을 확인합니다. " +
     "복수 영양제 병용 시 안전성을 확인할 때 사용하세요.",
   inputSchema: z.object({
-    ingredients: z.array(z.string()).min(2).describe(
+    ingredients: z.array(z.string().trim().min(1)).min(2).describe(
       "확인할 성분 이름 목록 (최소 2개)",
     ),
   }),
