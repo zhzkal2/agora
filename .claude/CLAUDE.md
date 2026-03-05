@@ -305,7 +305,20 @@ function isApiError(
 1. Deno 표준/외부 라이브러리 (`npm:`, `jsr:`, `@std/`)
 2. 프레임워크 (`fresh`, `hono`, `preact`)
 3. 내부 모듈 (`~/`, `../`, `./`)
-4. 타입 (`type` imports)
+4. 타입 전용 (`import type`로 명시)
+
+**중요**: 타입 전용 임포트는 반드시 `import type` 구문을 사용하고 모든 런타임 임포트 뒤에 배치.
+혼합 임포트는 분리: 같은 모듈에서 값과 타입을 모두 사용할 경우, 값 임포트는 해당 그룹에 유지하고 타입 전용만 마지막 그룹으로 이동.
+
+예시:
+```ts
+import { Hono } from "hono";
+import { useSignal } from "@preact/signals";
+import { fetchUser } from "./services/user.ts";
+
+import type { UserProfile } from "./types/index.ts";
+import type { ApiResponse } from "hono/types";
+```
 
 ### Git
 

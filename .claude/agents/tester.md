@@ -119,4 +119,4 @@ Summary:
   - 작업 요약 (3-5줄)
   - 커밋 이력 테이블
   - 검증 결과 (pass/fail)
-  - PR 링크
+  - PR 링크 (GitHub PR URL)

@@ -9,7 +9,7 @@ interface TopProduct {
   price: number;
   rating: number;
   review_count: number;
-  brands: { name: string };
+  brands: { name: string } | null;
 }
 
 interface Symptom {
@@ -32,7 +32,7 @@ export default define.page(async function Home(_ctx) {
       .order("name_ko"),
   ]);
 
-  const topProducts = (productsRes.data ?? []) as TopProduct[];
+  const topProducts = (productsRes.data ?? []) as unknown as TopProduct[];
   const symptoms = (symptomsRes.data ?? []) as Symptom[];
 
   return (
@@ -56,7 +56,7 @@ export default define.page(async function Home(_ctx) {
             품질 인증을 투명하게 비교합니다. 증상별 맞춤 추천으로 나에게 맞는
             영양제를 찾아보세요.
           </p>
-          <div class="flex gap-4 justify-center mt-8">
+          <div class="flex gap-4 justify-center mt-8 flex-wrap">
             <a
               href="/products"
               class="bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors"
@@ -70,6 +70,9 @@ export default define.page(async function Home(_ctx) {
               증상별 추천
             </a>
           </div>
+          <p class="text-sm text-gray-500 mt-4">
+            우측 하단의 AI 상담 버튼으로 맞춤 영양제 추천을 받아보세요.
+          </p>
         </section>
 
         {/* 인기 제품 섹션 */}
@@ -84,7 +87,7 @@ export default define.page(async function Home(_ctx) {
                   class="block bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 hover:shadow-md transition-all"
                 >
                   <p class="text-xs text-blue-600 font-medium">
-                    {product.brands.name}
+                    {product.brands?.name ?? "알 수 없는 브랜드"}
                   </p>
                   <h3 class="font-bold mt-1">{product.name}</h3>
                   <p class="text-sm text-gray-500 mt-1">{product.subtitle}</p>

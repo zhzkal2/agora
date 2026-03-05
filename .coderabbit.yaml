@@ -268,7 +268,6 @@ reviews:
     ignore_title_keywords:
       - "WIP"
       - "DO NOT MERGE"
-      - "wip"
       - "draft"
 
   # ── Pre-merge 체크 ──────────────────────────────────────
