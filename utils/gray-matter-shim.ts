@@ -12,26 +12,34 @@ interface MatterResult {
   orig: string;
 }
 
-function matter(input: string): MatterResult {
-  return {
-    data: {},
-    content: typeof input === "string" ? input : "",
-    excerpt: "",
-    orig: typeof input === "string" ? input : "",
-  };
+interface MatterFn {
+  (input: string): MatterResult;
+  stringify: (content: string) => string;
+  read: (filepath: string) => MatterResult;
+  test: (input: string) => boolean;
 }
 
-matter.stringify = function (content: string): string {
-  return content;
-};
-
-matter.read = function (_filepath: string): MatterResult {
-  return { data: {}, content: "", excerpt: "", orig: "" };
-};
-
-matter.test = function (_input: string): boolean {
-  return false;
-};
+const matter: MatterFn = Object.assign(
+  function matter(input: string): MatterResult {
+    return {
+      data: {},
+      content: typeof input === "string" ? input : "",
+      excerpt: "",
+      orig: typeof input === "string" ? input : "",
+    };
+  },
+  {
+    stringify(content: string): string {
+      return content;
+    },
+    read(_filepath: string): MatterResult {
+      return { data: {}, content: "", excerpt: "", orig: "" };
+    },
+    test(_input: string): boolean {
+      return false;
+    },
+  },
+);
 
 export default matter;
 export { matter };
