@@ -1,6 +1,7 @@
 import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import { supabase } from "../../utils/supabase.ts";
+import { safeJsonLd } from "../../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
   "https://agora-supplements.deno.dev";
@@ -47,10 +48,6 @@ const EVIDENCE_LABELS: Record<string, { text: string; color: string }> = {
   moderate: { text: "근거 보통", color: "bg-yellow-50 text-yellow-700" },
   weak: { text: "근거 약함", color: "bg-gray-100 text-gray-600" },
 };
-
-function safeJsonLd(data: unknown): string {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
-}
 
 function buildJsonLd(symptom: Symptom) {
   const productSlugs = new Set<string>();

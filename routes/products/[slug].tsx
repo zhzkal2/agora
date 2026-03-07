@@ -2,6 +2,7 @@ import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import { supabase } from "../../utils/supabase.ts";
 import AffiliateButton from "../../islands/AffiliateButton.tsx";
+import { safeJsonLd } from "../../utils/safe-json-ld.ts";
 
 interface ProductIngredient {
   amount: number;
@@ -38,10 +39,6 @@ interface Product {
     concept: string;
   };
   product_ingredients: ProductIngredient[];
-}
-
-function safeJsonLd(data: unknown): string {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 function buildJsonLd(product: Product) {

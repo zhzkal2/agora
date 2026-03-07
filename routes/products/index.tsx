@@ -1,6 +1,7 @@
 import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import { supabase } from "../../utils/supabase.ts";
+import { safeJsonLd } from "../../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
   "https://agora-supplements.deno.dev";
@@ -20,10 +21,6 @@ interface ProductListItem {
     name: string;
     slug: string;
   } | null;
-}
-
-function safeJsonLd(data: unknown): string {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 function buildItemListJsonLd(products: ProductListItem[]) {
