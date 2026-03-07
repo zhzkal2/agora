@@ -11,6 +11,10 @@ export default define.page(function App({ Component }) {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="google-site-verification"
+          content="I1CNVAj-5rL8FGj4d_dJb-0aAlGFKcFT2WSYLzU2hzo"
+        />
         <title>Agora Supplements - 영양제 비교 추천</title>
         <meta
           name="description"
