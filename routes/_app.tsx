@@ -1,6 +1,7 @@
 import { define } from "../utils.ts";
 import ChatBot from "../islands/ChatBot.tsx";
 import "../assets/styles.css";
+import { safeJsonLd } from "../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
   "https://agora-supplements.deno.dev";
@@ -10,10 +11,6 @@ const SITE_NAME = "Agora Supplements";
 const SITE_DESCRIPTION =
   "영양제 성분, 함량, 가격을 비교하고 증상별 최적의 영양제를 추천합니다.";
 const SITE_TITLE = `${SITE_NAME} - 영양제 비교 추천`;
-
-function safeJsonLd(data: unknown): string {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
-}
 
 export default define.page(function App({ Component }) {
   return (
