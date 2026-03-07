@@ -4,6 +4,7 @@ import "../assets/styles.css";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
   "https://agora-supplements.deno.dev";
+const GOOGLE_SITE_VERIFICATION = Deno.env.get("GOOGLE_SITE_VERIFICATION");
 
 export default define.page(function App({ Component }) {
   return (
@@ -11,6 +12,12 @@ export default define.page(function App({ Component }) {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {GOOGLE_SITE_VERIFICATION && (
+          <meta
+            name="google-site-verification"
+            content={GOOGLE_SITE_VERIFICATION}
+          />
+        )}
         <title>Agora Supplements - 영양제 비교 추천</title>
         <meta
           name="description"
