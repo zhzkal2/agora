@@ -23,9 +23,9 @@ const matter: MatterFn = Object.assign(
   function matter(input: string): MatterResult {
     return {
       data: {},
-      content: typeof input === "string" ? input : "",
+      content: typeof input,
       excerpt: "",
-      orig: typeof input === "string" ? input : "",
+      orig: typeof input,
     };
   },
   {
