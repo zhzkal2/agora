@@ -191,7 +191,7 @@ export const handler = define.handlers({
                       <div class="flex items-center gap-1 mt-2 text-sm">
                         <span class="text-yellow-500">★</span>
                         <span class="font-medium">{product.rating}</span>
-                        <span class="text-gray-400">
+                        <span class="text-gray-500">
                           ({product.review_count})
                         </span>
                       </div>
