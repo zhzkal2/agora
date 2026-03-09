@@ -97,7 +97,7 @@ export default define.page(async function Home(_ctx) {
                     </span>
                     <span class="text-sm">
                       <span class="text-yellow-500">★</span> {product.rating}
-                      <span class="text-gray-400 ml-1">
+                      <span class="text-gray-500 ml-1">
                         ({product.review_count})
                       </span>
                     </span>
