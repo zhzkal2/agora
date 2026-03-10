@@ -9,6 +9,33 @@ function getClientIp(req: Request): string | null {
     null;
 }
 
+/** 빌드된 CSS를 서버 시작 시 한 번만 읽어서 캐시 */
+let cachedCss: string | null = null;
+function loadCss(): string | null {
+  if (cachedCss !== null) return cachedCss;
+  try {
+    for (const entry of Deno.readDirSync("_fresh/client/assets")) {
+      if (
+        entry.name.startsWith("server-entry-") && entry.name.endsWith(".css")
+      ) {
+        cachedCss = Deno.readTextFileSync(`_fresh/client/assets/${entry.name}`);
+        return cachedCss;
+      }
+    }
+  } catch {
+    // dev 모드 또는 빌드 미완료 시 무시
+  }
+  return null;
+}
+
+/** HTML 응답에서 <link rel="stylesheet"> → 인라인 <style> 변환 */
+function inlineCss(html: string, css: string): string {
+  return html.replace(
+    /<link\s+rel="stylesheet"\s+href="\/assets\/[^"]+\.css"[^>]*>/,
+    `<style>${css}</style>`,
+  );
+}
+
 export default define.middleware(async (ctx) => {
   const userAgent = ctx.req.headers.get("user-agent") ?? "";
   const bot = classifyBot(userAgent);
@@ -42,6 +69,20 @@ export default define.middleware(async (ctx) => {
       response_code: resp.status,
       response_time_ms: elapsed,
     }).catch((err) => console.error("[bot-log] 비동기 로깅 실패:", err));
+  }
+
+  // HTML 응답의 렌더 차단 CSS를 인라인으로 변환
+  const contentType = resp.headers.get("content-type") ?? "";
+  if (contentType.includes("text/html")) {
+    const css = loadCss();
+    if (css) {
+      const html = await resp.text();
+      const headers = new Headers(resp.headers);
+      return new Response(inlineCss(html, css), {
+        status: resp.status,
+        headers,
+      });
+    }
   }
 
   return resp;
