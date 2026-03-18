@@ -12,6 +12,7 @@ interface ProductListItem {
   slug: string;
   subtitle: string;
   price: number;
+  image_url: string | null;
   rating: number;
   review_count: number;
   form: string;
@@ -65,7 +66,7 @@ export const handler = define.handlers({
       const { data, error } = await supabase
         .from("products")
         .select(`
-          id, name, slug, subtitle, price, rating, review_count,
+          id, name, slug, subtitle, price, image_url, rating, review_count,
           form, certification, servings_per_container,
           brands(name, slug)
         `)
@@ -169,6 +170,16 @@ export const handler = define.handlers({
                       href={`/products/${product.slug}`}
                       class="block bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-300 hover:shadow-md transition-all"
                     >
+                      {product.image_url && (
+                        <img
+                          src={product.image_url}
+                          alt={product.name}
+                          width={120}
+                          height={120}
+                          class="w-24 h-24 object-contain mx-auto mb-3"
+                          loading="lazy"
+                        />
+                      )}
                       <p class="text-xs text-blue-600 font-medium">
                         {product.brands?.name ?? "알 수 없는 브랜드"}
                       </p>

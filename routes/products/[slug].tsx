@@ -29,6 +29,7 @@ interface Product {
   servings_per_container: number;
   form: string;
   certification: string[];
+  image_url: string | null;
   rating: number;
   review_count: number;
   affiliate_url: string | null;
@@ -52,6 +53,7 @@ function buildJsonLd(product: Product) {
     "name": product.name,
     "brand": { "@type": "Brand", "name": product.brands.name },
     "description": product.description,
+    ...(product.image_url ? { "image": product.image_url } : {}),
     "category": "영양제",
     "offers": {
       "@type": "Offer",
@@ -108,7 +110,7 @@ export const handler = define.handlers({
       .select(`
         id, name, slug, subtitle, description, price, currency,
         serving_size, servings_per_container, form, certification,
-        rating, review_count, affiliate_url,
+        image_url, rating, review_count, affiliate_url,
         brands(name, slug, origin, concept),
         product_ingredients(amount, unit, daily_value_pct, form,
           ingredients(name, name_ko, category, description))
@@ -173,26 +175,47 @@ export const handler = define.handlers({
 
             {/* 제품 헤더 */}
             <section class="mb-8">
-              <div class="flex items-start justify-between flex-wrap gap-4">
-                <div>
-                  <p class="text-sm text-blue-600 font-medium" itemProp="brand">
-                    {product.brands.name}
-                  </p>
-                  <h1
-                    class="text-2xl md:text-3xl font-bold mt-1"
-                    itemProp="name"
-                  >
-                    {product.name}
-                  </h1>
-                  <p class="text-gray-600 mt-1">{product.subtitle}</p>
-                </div>
-                <div class="text-right">
-                  <p class="text-3xl font-bold text-blue-700" itemProp="price">
-                    ${product.price}
-                  </p>
-                  {dailyCost && (
-                    <p class="text-sm text-gray-500">1일 ${dailyCost}</p>
-                  )}
+              <div class="flex gap-6 flex-wrap">
+                {product.image_url && (
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    width={160}
+                    height={160}
+                    class="w-32 h-32 md:w-40 md:h-40 object-contain rounded-lg border border-gray-200 bg-white shrink-0"
+                    itemProp="image"
+                    loading="eager"
+                  />
+                )}
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between flex-wrap gap-4">
+                    <div>
+                      <p
+                        class="text-sm text-blue-600 font-medium"
+                        itemProp="brand"
+                      >
+                        {product.brands.name}
+                      </p>
+                      <h1
+                        class="text-2xl md:text-3xl font-bold mt-1"
+                        itemProp="name"
+                      >
+                        {product.name}
+                      </h1>
+                      <p class="text-gray-600 mt-1">{product.subtitle}</p>
+                    </div>
+                    <div class="text-right">
+                      <p
+                        class="text-3xl font-bold text-blue-700"
+                        itemProp="price"
+                      >
+                        ${product.price}
+                      </p>
+                      {dailyCost && (
+                        <p class="text-sm text-gray-500">1일 ${dailyCost}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="flex items-center gap-4 mt-4 flex-wrap">
