@@ -9,10 +9,10 @@ function getClientIp(req: Request): string | null {
     null;
 }
 
-/** 빌드된 CSS를 서버 시작 시 한 번만 읽어서 캐시 */
-let cachedCss: string | null = null;
+/** 빌드된 CSS를 서버 시작 시 한 번만 읽어서 캐시 (네거티브 결과도 캐싱) */
+let cachedCss: string | undefined;
 function loadCss(): string | null {
-  if (cachedCss !== null) return cachedCss;
+  if (cachedCss !== undefined) return cachedCss || null;
   try {
     for (const entry of Deno.readDirSync("_fresh/client/assets")) {
       if (
@@ -25,14 +25,16 @@ function loadCss(): string | null {
   } catch {
     // dev 모드 또는 빌드 미완료 시 무시
   }
+  cachedCss = "";
   return null;
 }
 
 /** HTML 응답에서 <link rel="stylesheet"> → 인라인 <style> 변환 */
 function inlineCss(html: string, css: string): string {
+  const safeCss = css.replaceAll("</style>", "<\\/style>");
   return html.replace(
     /<link\s+rel="stylesheet"\s+href="\/assets\/[^"]+\.css"[^>]*>/,
-    `<style>${css}</style>`,
+    `<style>${safeCss}</style>`,
   );
 }
 
@@ -78,6 +80,8 @@ export default define.middleware(async (ctx) => {
     if (css) {
       const html = await resp.text();
       const headers = new Headers(resp.headers);
+      headers.delete("content-length");
+      headers.delete("etag");
       return new Response(inlineCss(html, css), {
         status: resp.status,
         headers,

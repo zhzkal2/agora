@@ -40,6 +40,7 @@ function buildItemListJsonLd(products: ProductListItem[]) {
         "@type": "Product",
         "name": product.name,
         "description": product.subtitle,
+        ...(product.image_url ? { "image": product.image_url } : {}),
         ...(product.brands
           ? { "brand": { "@type": "Brand", "name": product.brands.name } }
           : {}),

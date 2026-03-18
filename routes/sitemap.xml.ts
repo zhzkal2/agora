@@ -28,6 +28,9 @@ export const handler = define.handlers({
     if (symptomsRes.error) {
       console.error("sitemap: symptoms query failed", symptomsRes.error);
     }
+    if (productsRes.error && symptomsRes.error) {
+      return new Response("Service Unavailable", { status: 503 });
+    }
 
     const urls = [
       { loc: "/", priority: "1.0", changefreq: "weekly" },

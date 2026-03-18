@@ -105,7 +105,7 @@ const brandMap = Object.fromEntries(brands.map((b) => [b.slug, b.id]));
 console.log("2. 성분 추가...");
 const { data: ingredients, error: ingredientsErr } = await supabase
   .from("ingredients")
-  .insert([
+  .upsert([
     {
       name: "Vitamin B1 (Thiamine)",
       name_ko: "비타민 B1 (티아민)",
@@ -524,7 +524,7 @@ const productsData = [
 
 const { data: products, error: productsErr } = await supabase
   .from("products")
-  .insert(productsData)
+  .upsert(productsData, { onConflict: "slug" })
   .select();
 
 if (productsErr) {
@@ -928,9 +928,22 @@ const piData = [
   },
 ];
 
+const validPiData = piData.filter((pi) => {
+  if (!pi.product_id || !pi.ingredient_id) {
+    console.warn("  ⚠️ 누락된 ID로 건너뜀:", JSON.stringify(pi));
+    return false;
+  }
+  return true;
+});
+if (validPiData.length < piData.length) {
+  console.warn(
+    `  ${piData.length - validPiData.length}개 매핑이 누락된 ID로 제외됨`,
+  );
+}
+
 const { data: piResult, error: piErr } = await supabase
   .from("product_ingredients")
-  .insert(piData)
+  .insert(validPiData)
   .select();
 
 if (piErr) {
@@ -1193,9 +1206,22 @@ const isData = [
   },
 ];
 
+const validIsData = isData.filter((is) => {
+  if (!is.ingredient_id || !is.symptom_id) {
+    console.warn("  ⚠️ 누락된 ID로 건너뜀:", JSON.stringify(is));
+    return false;
+  }
+  return true;
+});
+if (validIsData.length < isData.length) {
+  console.warn(
+    `  ${isData.length - validIsData.length}개 매핑이 누락된 ID로 제외됨`,
+  );
+}
+
 const { data: isResult, error: isErr } = await supabase
   .from("ingredient_symptoms")
-  .insert(isData)
+  .insert(validIsData)
   .select();
 
 if (isErr) {

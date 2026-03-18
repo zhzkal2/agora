@@ -155,6 +155,9 @@ export const handler = define.handlers({
           />
           <meta property="og:description" content={product.subtitle} />
           <meta property="og:type" content="product" />
+          {product.image_url && (
+            <meta property="og:image" content={product.image_url} />
+          )}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
