@@ -253,7 +253,7 @@ const productsData = [
     servings_per_container: 60,
     form: "캡슐",
     certification: ["NSF Certified for Sport", "GMP"],
-    image_url: "https://s3.images-iherb.com/tho/tho18126/v/0.jpg",
+    image_url: "/images/products/thorne-b-complex-12.webp",
     affiliate_url:
       "https://www.iherb.com/pr/thorne-b-complex-12-60-capsules/18126",
     rating: 4.7,
@@ -271,7 +271,7 @@ const productsData = [
     servings_per_container: 100,
     form: "캡슐",
     certification: ["GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/now/now39670/v/0.jpg",
+    image_url: "/images/products/now-foods-b-50.webp",
     affiliate_url:
       "https://www.iherb.com/pr/now-foods-b-50-100-veg-capsules/39670",
     rating: 4.6,
@@ -289,7 +289,7 @@ const productsData = [
     servings_per_container: 100,
     form: "캡슐",
     certification: ["GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/jrw/jrw00110/v/0.jpg",
+    image_url: "/images/products/jarrow-formulas-b-right.webp",
     affiliate_url:
       "https://www.iherb.com/pr/jarrow-formulas-b-right-100-veggie-capsules/110",
     rating: 4.6,
@@ -307,7 +307,7 @@ const productsData = [
     servings_per_container: 30,
     form: "캡슐",
     certification: ["GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/lex/lex67051/v/0.jpg",
+    image_url: "/images/products/life-extension-bioactive-b-complex.webp",
     affiliate_url:
       "https://www.iherb.com/pr/life-extension-bioactive-complete-b-complex-60-vegetarian-capsules/67051",
     rating: 4.7,
@@ -325,7 +325,7 @@ const productsData = [
     servings_per_container: 30,
     form: "캡슐",
     certification: ["USDA Organic", "Non-GMO", "Vegan"],
-    image_url: "https://s3.images-iherb.com/gol/gol46039/v/0.jpg",
+    image_url: "/images/products/garden-of-life-raw-b-complex.webp",
     affiliate_url:
       "https://www.iherb.com/pr/garden-of-life-vitamin-code-raw-b-complex-120-vegan-capsules/46039",
     rating: 4.5,
@@ -345,7 +345,7 @@ const productsData = [
     servings_per_container: 120,
     form: "정제",
     certification: ["GMP", "Vegan", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/drb/drb00015/v/0.jpg",
+    image_url: "/images/products/doctors-best-magnesium-glycinate.webp",
     affiliate_url:
       "https://www.iherb.com/pr/doctor-s-best-high-absorption-magnesium-120-tablets/15",
     rating: 4.7,
@@ -363,7 +363,7 @@ const productsData = [
     servings_per_container: 180,
     form: "정제",
     certification: ["GMP", "Vegan", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/now/now88819/v/0.jpg",
+    image_url: "/images/products/now-foods-magnesium-glycinate.webp",
     affiliate_url:
       "https://www.iherb.com/pr/now-foods-magnesium-glycinate-180-tablets/88819",
     rating: 4.6,
@@ -381,7 +381,7 @@ const productsData = [
     servings_per_container: 100,
     form: "캡슐",
     certification: ["GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/lex/lex48803/v/0.jpg",
+    image_url: "/images/products/life-extension-magnesium-caps.webp",
     affiliate_url:
       "https://www.iherb.com/pr/life-extension-magnesium-caps-500-mg-100-vegetarian-capsules/48803",
     rating: 4.5,
@@ -401,7 +401,7 @@ const productsData = [
     servings_per_container: 240,
     form: "소프트젤",
     certification: ["GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/now/now10421/v/0.jpg",
+    image_url: "/images/products/now-foods-vitamin-d3-5000iu.webp",
     affiliate_url:
       "https://www.iherb.com/pr/now-foods-vitamin-d-3-5-000-iu-120-softgels/10421",
     rating: 4.8,
@@ -419,7 +419,7 @@ const productsData = [
     servings_per_container: 600,
     form: "리퀴드",
     certification: ["NSF Certified for Sport", "GMP"],
-    image_url: "https://s3.images-iherb.com/tho/tho23517/v/0.jpg",
+    image_url: "/images/products/thorne-vitamin-d-k2-liquid.webp",
     affiliate_url:
       "https://www.iherb.com/pr/thorne-vitamin-d-k2-1-fl-oz-30-ml/23517",
     rating: 4.8,
@@ -439,7 +439,7 @@ const productsData = [
     servings_per_container: 30,
     form: "소프트젤",
     certification: ["Friend of the Sea", "Non-GMO", "GMP"],
-    image_url: "https://s3.images-iherb.com/nor/nor04200/v/0.jpg",
+    image_url: "/images/products/nordic-naturals-ultimate-omega.webp",
     affiliate_url:
       "https://www.iherb.com/pr/nordic-naturals-ultimate-omega-120-soft-gels/4200",
     rating: 4.8,
@@ -457,7 +457,7 @@ const productsData = [
     servings_per_container: 240,
     form: "소프트젤",
     certification: ["IFOS 5-Star", "GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/cgn/cgn01099/v/0.jpg",
+    image_url: "/images/products/cgn-omega-3-fish-oil.webp",
     affiliate_url:
       "https://www.iherb.com/pr/california-gold-nutrition-omega-3-premium-fish-oil-240-fish-gelatin-softgels/61856",
     rating: 4.5,
@@ -477,7 +477,7 @@ const productsData = [
     servings_per_container: 60,
     form: "캡슐",
     certification: ["GMP", "Non-GMO"],
-    image_url: "https://s3.images-iherb.com/jrw/jrw00124/v/0.jpg",
+    image_url: "/images/products/jarrow-formulas-jarro-dophilus-eps.webp",
     affiliate_url:
       "https://www.iherb.com/pr/jarrow-formulas-jarro-dophilus-eps-60-veggie-capsules/124",
     rating: 4.6,
@@ -497,7 +497,7 @@ const productsData = [
     servings_per_container: 250,
     form: "정제",
     certification: ["GMP", "Non-GMO", "Vegan"],
-    image_url: "https://s3.images-iherb.com/now/now00685/v/0.jpg",
+    image_url: "/images/products/now-foods-vitamin-c-1000.webp",
     affiliate_url: "https://www.iherb.com/pr/now-foods-c-1000-250-tablets/685",
     rating: 4.7,
     review_count: 7123,
@@ -514,7 +514,7 @@ const productsData = [
     servings_per_container: 60,
     form: "캡슐",
     certification: ["NSF Certified for Sport", "GMP"],
-    image_url: "https://s3.images-iherb.com/tho/tho12002/v/0.jpg",
+    image_url: "/images/products/thorne-zinc-picolinate-30mg.webp",
     affiliate_url:
       "https://www.iherb.com/pr/thorne-zinc-picolinate-30-mg-60-capsules/18159",
     rating: 4.7,
