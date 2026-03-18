@@ -4,7 +4,7 @@ import { supabase } from "../../utils/supabase.ts";
 import { safeJsonLd } from "../../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 
 interface Symptom {
   id: string;
@@ -79,14 +79,14 @@ export const handler = define.handlers({
     const page = (
       <>
         <Head>
-          <title>증상별 영양제 추천 | Agora Supplements</title>
+          <title>증상별 영양제 추천 | VitaCompare</title>
           <meta
             name="description"
             content="피로, 수면, 집중력, 면역력, 스트레스 등 증상별로 적합한 영양제를 추천합니다. 근거 기반 성분 분석으로 최적의 영양제를 찾아보세요."
           />
           <meta
             property="og:title"
-            content="증상별 영양제 추천 | Agora Supplements"
+            content="증상별 영양제 추천 | VitaCompare"
           />
           <meta
             property="og:description"

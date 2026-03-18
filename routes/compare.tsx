@@ -10,7 +10,7 @@ import ProductCompare from "../islands/ProductCompare.tsx";
 import { safeJsonLd } from "../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 
 function buildItemListJsonLd(
   products: { name: string; slug: string }[],
@@ -66,14 +66,14 @@ export default define.page(async function ComparePage(ctx) {
   return (
     <>
       <Head>
-        <title>영양제 비교 | Agora Supplements</title>
+        <title>영양제 비교 | VitaCompare</title>
         <meta
           name="description"
           content="영양제 제품을 나란히 비교하세요. 가격, 성분 함량, 인증, 1일 비용을 한눈에 확인할 수 있습니다."
         />
         <meta
           property="og:title"
-          content="영양제 비교 | Agora Supplements"
+          content="영양제 비교 | VitaCompare"
         />
         <meta
           property="og:description"

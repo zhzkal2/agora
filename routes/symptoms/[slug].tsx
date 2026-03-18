@@ -4,7 +4,7 @@ import { supabase } from "../../utils/supabase.ts";
 import { safeJsonLd } from "../../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 
 interface IngredientWithProducts {
   relevance_score: number;
@@ -172,7 +172,7 @@ export const handler = define.handlers({
     const page = (
       <>
         <Head>
-          <title>{symptom.name_ko} 영양제 추천 | Agora Supplements</title>
+          <title>{symptom.name_ko} 영양제 추천 | VitaCompare</title>
           <meta
             name="description"
             content={`${symptom.description} ${symptom.name_ko}에 도움이 되는 영양 성분과 추천 제품을 확인하세요.`}

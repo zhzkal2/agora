@@ -38,7 +38,7 @@ export default define.page(async function Home(_ctx) {
   return (
     <>
       <Head>
-        <title>Agora Supplements | AI 최적화 영양제 비교</title>
+        <title>VitaCompare | AI 최적화 영양제 비교</title>
         <meta
           name="description"
           content="비타민B군, 마그네슘 등 주요 영양제의 성분, 함량, 가격을 비교합니다. 증상별 추천과 전문 성분 분석으로 최적의 영양제를 찾아보세요."
@@ -141,7 +141,7 @@ export default define.page(async function Home(_ctx) {
         <section class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
           <h2 class="text-xl font-bold mb-3">이 사이트에 대해</h2>
           <p class="text-gray-700 leading-relaxed">
-            Agora Supplements는 영양제 성분 정보를 투명하게 비교할 수 있는
+            VitaCompare는 영양제 성분 정보를 투명하게 비교할 수 있는
             사이트입니다. 각 제품의 활성형 성분 여부, 정확한 함량, 1일 섭취
             비용, GMP·NSF 등 품질 인증 정보를 제공합니다. 증상별(피로, 수면,
             집중력, 면역력, 스트레스) 추천 기능으로 자신의 건강 고민에 맞는

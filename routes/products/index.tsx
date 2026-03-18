@@ -4,7 +4,7 @@ import { supabase } from "../../utils/supabase.ts";
 import { safeJsonLd } from "../../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 
 interface ProductListItem {
   id: string;
@@ -100,14 +100,14 @@ export const handler = define.handlers({
     const page = (
       <>
         <Head>
-          <title>영양제 제품 목록 | Agora Supplements</title>
+          <title>영양제 제품 목록 | VitaCompare</title>
           <meta
             name="description"
             content="비타민B군, 마그네슘 등 주요 영양제의 성분, 함량, 가격을 비교합니다. 전문가 리뷰와 인증 정보를 확인하세요."
           />
           <meta
             property="og:title"
-            content="영양제 제품 목록 | Agora Supplements"
+            content="영양제 제품 목록 | VitaCompare"
           />
           <meta
             property="og:description"

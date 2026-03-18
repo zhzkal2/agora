@@ -635,8 +635,7 @@ export const getDosageGuideTool = createTool({
 
 // ─── Agent 정의 ────────────────────────────────────────────────────
 
-const SYSTEM_INSTRUCTIONS =
-  `당신은 'Agora Supplements'의 영양제 전문 상담사입니다.
+const SYSTEM_INSTRUCTIONS = `당신은 'VitaCompare'의 영양제 전문 상담사입니다.
 
 역할:
 - 사용자의 건강 고민과 증상을 듣고 적절한 영양제를 추천합니다.

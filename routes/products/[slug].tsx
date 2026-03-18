@@ -142,7 +142,7 @@ export const handler = define.handlers({
     const page = (
       <>
         <Head>
-          <title>{product.name} | Agora Supplements</title>
+          <title>{product.name} | VitaCompare</title>
           <meta
             name="description"
             content={`${product.subtitle}. ${product.brands.name} 제조. ${
@@ -151,7 +151,7 @@ export const handler = define.handlers({
           />
           <meta
             property="og:title"
-            content={`${product.name} | Agora Supplements`}
+            content={`${product.name} | VitaCompare`}
           />
           <meta property="og:description" content={product.subtitle} />
           <meta property="og:type" content="product" />

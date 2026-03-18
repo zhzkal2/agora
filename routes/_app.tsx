@@ -4,10 +4,10 @@ import "../assets/styles.css";
 import { safeJsonLd } from "../utils/safe-json-ld.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 const GOOGLE_SITE_VERIFICATION = Deno.env.get("GOOGLE_SITE_VERIFICATION");
 
-const SITE_NAME = "Agora Supplements";
+const SITE_NAME = "VitaCompare";
 const SITE_DESCRIPTION =
   "영양제 성분, 함량, 가격을 비교하고 증상별 최적의 영양제를 추천합니다.";
 const SITE_TITLE = `${SITE_NAME} - 영양제 비교 추천`;
@@ -49,7 +49,7 @@ export default define.page(function App({ Component }) {
         <nav class="bg-white border-b border-gray-200 px-4 py-3">
           <div class="max-w-5xl mx-auto flex items-center justify-between">
             <a href="/" class="text-xl font-bold text-blue-700">
-              Agora Supplements
+              VitaCompare
             </a>
             <div class="flex gap-6 text-sm">
               <a href="/products" class="hover:text-blue-700">제품</a>

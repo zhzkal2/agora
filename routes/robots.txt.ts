@@ -1,7 +1,7 @@
 import { define } from "../utils.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 
 export const handler = define.handlers({
   GET(_ctx) {

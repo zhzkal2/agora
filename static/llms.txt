@@ -1,23 +1,31 @@
-# 영양제 추천 사이트
+# VitaCompare - 영양제 비교 추천 사이트
 
 > 영양제 성분, 효능, 가격을 비교하고 증상별 최적의 영양제를 추천하는 사이트입니다.
 
-비타민B군을 중심으로 주요 브랜드의 상세 성분 함량, 1일 비용,
-인증 정보를 제공합니다. 각 상품 페이지에는 Schema.org Product 타입의
-JSON-LD 구조화 데이터가 포함되어 있습니다.
+비타민B군, 마그네슘, 비타민D, 오메가-3, 유산균, 비타민C, 아연 등
+주요 영양제의 상세 성분 함량, 1일 비용, 인증 정보를 제공합니다.
+각 상품 페이지에는 Schema.org Product 타입의 JSON-LD 구조화 데이터가
+포함되어 있습니다.
 
 ## 브랜드
-- [VitaCore Labs](/products?brand=vitacore-labs): 고함량 프리미엄 영양제
-- [NutriZen](/products?brand=nutrizen): 자연주의 활성형 영양제
-- [BioPlus Health](/products?brand=bioplus-health): 가성비 대용량 영양제
-- [MediPure Labs](/products?brand=medipure-labs): 의약품급 GMP 영양제
+- [Thorne](/products?brand=thorne): 의료 전문가급 프리미엄 영양제
+- [NOW Foods](/products?brand=now-foods): 가성비와 품질의 균형
+- [Jarrow Formulas](/products?brand=jarrow-formulas): 과학 기반 활성형 포뮬레이션
+- [Life Extension](/products?brand=life-extension): 최신 과학 연구 기반 프리미엄
+- [Doctor's Best](/products?brand=doctors-best): 검증된 특허 원료
+- [Nordic Naturals](/products?brand=nordic-naturals): 프리미엄 오메가-3 전문
+- [Garden of Life](/products?brand=garden-of-life): 유기농 홀푸드 영양제
+- [California Gold Nutrition](/products?brand=california-gold-nutrition): 고품질 합리적 가격
 
 ## 제품
-- [VitaCore B-Complex Ultra 3000](/products/vitacore-b-complex-ultra-3000): 고함량 활성형 비타민B 콤플렉스
-- [NutriZen Active B-Complex](/products/nutrizen-active-b-complex): 자연 유래 활성형 비타민B
-- [BioPlus Mega B-50](/products/bioplus-mega-b-50): 대용량 가성비 비타민B
-- [MediPure Clinical B-Complex](/products/medipure-clinical-b-complex): 의약품급 고순도 비타민B
-- [VitaCore Magnesium Plus](/products/vitacore-magnesium-plus): 고흡수 마그네슘 글리시네이트
+- [Thorne B-Complex #12](/products/thorne-b-complex-12): 의료 전문가급 활성형 비타민B
+- [NOW Foods B-50](/products/now-foods-b-50): 균형 잡힌 가성비 비타민B
+- [Jarrow Formulas B-Right](/products/jarrow-formulas-b-right): 최적화된 활성형 B 콤플렉스
+- [Doctor's Best Magnesium](/products/doctors-best-magnesium-glycinate): Albion 특허 고흡수 마그네슘
+- [NOW Foods Vitamin D-3](/products/now-foods-vitamin-d3-5000iu): 고함량 비타민D3
+- [Nordic Naturals Ultimate Omega](/products/nordic-naturals-ultimate-omega): 고순도 오메가-3
+- [NOW Foods Vitamin C-1000](/products/now-foods-vitamin-c-1000): 비타민C + 로즈힙
+- [Thorne Zinc Picolinate](/products/thorne-zinc-picolinate-30mg): 고흡수 아연
 
 ## 증상별 추천
 - [피로회복](/symptoms/fatigue): 피로에 도움되는 영양제 추천

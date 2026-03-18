@@ -2,7 +2,7 @@ import { define } from "../utils.ts";
 import { supabase } from "../utils/supabase.ts";
 
 const BASE_URL = Deno.env.get("BASE_URL") ||
-  "https://agora-supplements.deno.dev";
+  "https://vitacompare.deno.dev";
 
 function escapeXml(str: string): string {
   return str
